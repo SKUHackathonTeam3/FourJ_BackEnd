@@ -1,5 +1,6 @@
 package com.skuteam3.fourj.account.domain;
 
+import com.skuteam3.fourj.abti.domain.Abti;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,10 @@ public class UserInfo {
     }
 
     // Feature 추가할 때 아래 추가하기!!!
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "abti", referencedColumnName = "id")
+    private Abti abti;
 
 
 }
