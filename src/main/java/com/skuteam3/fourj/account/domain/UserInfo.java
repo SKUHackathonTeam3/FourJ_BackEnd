@@ -1,11 +1,14 @@
 package com.skuteam3.fourj.account.domain;
 
 import com.skuteam3.fourj.abti.domain.Abti;
+import com.skuteam3.fourj.contact.domain.Contact;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,9 +38,12 @@ public class UserInfo {
 
     // Feature 추가할 때 아래 추가하기!!!
 
+    // ABTI
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "abti", referencedColumnName = "id")
     private Abti abti;
 
-
+    // Contacts
+    @OneToMany(mappedBy = "userInfo")
+    List<Contact> contacts  = new ArrayList<>();
 }
