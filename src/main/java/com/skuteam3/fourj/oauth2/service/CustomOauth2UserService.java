@@ -1,6 +1,7 @@
 package com.skuteam3.fourj.oauth2.service;
 
 import com.skuteam3.fourj.account.Role;
+import com.skuteam3.fourj.account.domain.CustomUserDetails;
 import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserInfoRepository;
@@ -66,7 +67,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         Optional<SocialUser> existingUser = socialUserRepository.findByEmail(socialUser.getEmail());
         if (existingUser.isPresent() && existingUser.get().getSocialType().equals(socialUser.getSocialType())) {
-            return oAuth2User;
+            return new CustomUserDetails(socialUser.getUser(), oAuth2User.getAttributes());
         }
 
         User user = userRepository.findByEmail(userEmail).orElse(null);
@@ -95,6 +96,6 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         socialUserRepository.save(socialUser);
 
-        return oAuth2User;
+        return new CustomUserDetails(socialUser.getUser(), oAuth2User.getAttributes());
     }
 }
