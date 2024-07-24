@@ -36,4 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
+
 application.yml
+fourj_firebase_service_key.json
