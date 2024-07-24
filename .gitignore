@@ -38,4 +38,4 @@ out/
 
 
 application.yml
-fourj_firebase_service_key.json
+*.json
