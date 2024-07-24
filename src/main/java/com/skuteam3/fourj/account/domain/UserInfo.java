@@ -1,5 +1,6 @@
 package com.skuteam3.fourj.account.domain;
 
+import com.skuteam3.fourj.calendar.domain.Calendar;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,7 @@ public class UserInfo {
     }
 
     // Feature 추가할 때 아래 추가하기!!!
-
+    @OneToOne(mappedBy = "userInfo")
+    private Calendar calendar;
 
 }
