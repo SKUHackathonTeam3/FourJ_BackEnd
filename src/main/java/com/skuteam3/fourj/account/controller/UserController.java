@@ -59,9 +59,4 @@ public class UserController {
         }
     }
 
-    @PostMapping("/users/login")
-    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> user, HttpServletResponse response) {
-        return null;
-    }
-
 }
