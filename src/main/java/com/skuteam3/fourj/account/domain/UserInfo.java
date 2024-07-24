@@ -1,5 +1,6 @@
 package com.skuteam3.fourj.account.domain;
 
+import com.skuteam3.fourj.calendar.domain.Calendar;
 import com.skuteam3.fourj.abti.domain.Abti;
 import com.skuteam3.fourj.contact.domain.Contact;
 import jakarta.persistence.*;
@@ -37,6 +38,10 @@ public class UserInfo {
     }
 
     // Feature 추가할 때 아래 추가하기!!!
+  
+    // Calendar
+    @OneToOne(mappedBy = "userInfo")
+    private Calendar calendar;
 
     // ABTI
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
