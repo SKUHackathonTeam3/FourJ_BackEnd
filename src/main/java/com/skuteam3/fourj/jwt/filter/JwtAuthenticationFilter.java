@@ -1,8 +1,10 @@
 package com.skuteam3.fourj.jwt.filter;
 
 
+import com.skuteam3.fourj.account.domain.CustomUserDetails;
 import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.repository.UserRepository;
+import com.skuteam3.fourj.account.service.UserDetailService;
 import com.skuteam3.fourj.jwt.provider.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -31,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final UserDetailService userDetailService;
 
 
     @Override
@@ -50,17 +54,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                User user = userRepository.findByEmail(userEmail).orElseThrow(null);
-                String role = user.getUserRole();
-                List<GrantedAuthority> authorities = new ArrayList<>();
+                CustomUserDetails customUserDetails = userDetailService.loadUserByUsername(userEmail);
 
-                authorities.add(new SimpleGrantedAuthority(role));
+                if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userEmail, null, authorities);
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                securityContext.setAuthentication(authenticationToken);
-                SecurityContextHolder.setContext(securityContext);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            customUserDetails,
+                            null,
+                            customUserDetails.getAuthorities()
+                    );
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             } else {
 
                 filterChain.doFilter(request, response);

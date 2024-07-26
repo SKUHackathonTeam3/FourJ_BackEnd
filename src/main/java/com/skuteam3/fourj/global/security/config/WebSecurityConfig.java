@@ -3,6 +3,7 @@ package com.skuteam3.fourj.global.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skuteam3.fourj.account.filter.JsonUsernamePasswordAuthenticationFilter;
 import com.skuteam3.fourj.account.repository.UserRepository;
+import com.skuteam3.fourj.account.service.UserDetailService;
 import com.skuteam3.fourj.global.security.handler.LoginSuccessHandler;
 import com.skuteam3.fourj.jwt.filter.JwtAuthenticationFilter;
 import com.skuteam3.fourj.jwt.provider.JwtProvider;
@@ -37,7 +38,7 @@ public class WebSecurityConfig {
 
     private final CustomOauth2UserService oAuth2UserService;
     private final LoginSuccessHandler loginSuccessHandler;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailService userDetailService;
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
@@ -127,7 +128,7 @@ public class WebSecurityConfig {
 
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder());
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(userDetailService);
 
         return new ProviderManager(provider);
     }
@@ -135,7 +136,8 @@ public class WebSecurityConfig {
     @Bean JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(
                 jwtProvider,
-                userRepository
+                userRepository,
+                userDetailService
         );
     }
 
