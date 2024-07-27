@@ -2,6 +2,8 @@ package com.skuteam3.fourj.account.domain;
 
 import com.skuteam3.fourj.calendar.domain.Calendar;
 import com.skuteam3.fourj.abti.domain.Abti;
+import com.skuteam3.fourj.community.domain.GroupPost;
+import com.skuteam3.fourj.community.domain.PrivatePost;
 import com.skuteam3.fourj.contact.domain.Contact;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,4 +53,12 @@ public class UserInfo {
     // Contacts
     @OneToMany(mappedBy = "userInfo")
     List<Contact> contacts  = new ArrayList<>();
+
+    // GroupPost
+    @OneToMany(mappedBy = "userInfo")
+    List<GroupPost> groupPosts  = new ArrayList<>();
+
+    //PrivatePost
+    @OneToMany(mappedBy = "userInfo")
+    List<PrivatePost> privatePosts  = new ArrayList<>();
 }
