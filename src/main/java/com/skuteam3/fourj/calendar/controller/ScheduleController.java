@@ -77,5 +77,14 @@ public class ScheduleController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{year}/{month}/{startDay}/{endDay}")
+    public ResponseEntity<Double> calculateWeeklyAlcohol(HttpServletRequest request, @PathVariable int year, @PathVariable int month, @PathVariable int startDay, @PathVariable int endDay){
+
+        String userEmail = jwtProvider.validate(jwtProvider.parseToken(request));
+
+        Double weeklyAlcohol = scheduleService.calculateWeeklyAlcohol(year, month, startDay, endDay, userEmail);
+        return ResponseEntity.ok(weeklyAlcohol);
+    }
+
 
 }
