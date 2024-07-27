@@ -6,10 +6,12 @@ import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.calendar.domain.Calendar;
 import com.skuteam3.fourj.calendar.dto.CalendarDto;
 import com.skuteam3.fourj.calendar.repository.CalendarRepository;
+import com.skuteam3.fourj.challenge.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class CalendarService {
     private final CalendarRepository calendarRepository;
     private final UserRepository userRepository;
+    private final ChallengeService challengeService;
 
     @Transactional
     public Calendar createCalendar(CalendarDto calendarDto, String userEmail){
@@ -28,6 +31,15 @@ public class CalendarService {
         calendar.setMonth(calendarDto.getMonth());
         calendar.setDay(calendarDto.getDay());
         calendar.setUserInfo(userInfo);
+
+        try {
+
+            if (challengeService.getOngoingWeeklyChallenge(userEmail) != null) {
+                LocalDate endDate = LocalDate.of(calendarDto.getYear(), calendarDto.getMonth(), calendarDto.getDay());
+                challengeService.updateWeeklyChallengeEndDate(userEmail, endDate);
+            }
+        } catch (Exception ignored) {
+        }
 
         return calendarRepository.save(calendar);
     }
