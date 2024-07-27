@@ -17,8 +17,5 @@ public interface WeeklyChallengeRepository extends JpaRepository<WeeklyChallenge
     Optional<WeeklyChallenge> findByStartDateBeforeAndGoalDateAfterAndEndDateIsNullAndUserInfo(LocalDate startDate, LocalDate goalDate, UserInfo userInfo);
     Optional<WeeklyChallenge> findByAchievedIsNullAndUserInfo(UserInfo userInfo);
 
-    @Query("Select * from WeeklyChallenge where achieved is not null and user_info_id == userInfo")
-    Optional<WeeklyChallenge> arilove(UserInfo userInfo);
-
     boolean existsByAchievedIsTrueAndUserInfo(UserInfo userInfo);
 }
