@@ -62,6 +62,7 @@ jobs:
         cd ./src/main/resources
         touch ./fourj_firebase_service_key.json
         echo "${{ secrets.FIREBASE_KEY_JSON }}" > ./fourj_firebase_service_key.json
+        iconv -f UTF-8 -t UTF-8 ./fourj_firebase_service_key.json -o ./fourj_firebase_service_key.json
       shell: bash
 
     # 환경별 yml 파일 생성(2) - prod
@@ -71,6 +72,7 @@ jobs:
         cd ./src/main/resources
         touch ./fourj_firebase_service_key.json
         echo "${{ secrets.FIREBASE_KEY_JSON }}" > ./fourj_firebase_service_key.json
+        iconv -f UTF-8 -t UTF-8 ./fourj_firebase_service_key.json -o ./fourj_firebase_service_key.json
       shell: bash
 
     # gradle chmod
