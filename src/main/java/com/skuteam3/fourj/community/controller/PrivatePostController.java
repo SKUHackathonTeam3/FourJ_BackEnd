@@ -65,12 +65,12 @@ public class PrivatePostController{
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
                     "해당 유저의 유저인포의 게시글이 맞는 경우 게시글을 게시글 ID로 조회합니다.",
             parameters = {
-                    @Parameter(name = "keyword", description = "[path_variable] keyword", required = true)
+                    @Parameter(name = "privatePostId", description = "[path_variable] privatePost의 Id", required = true)
             }
     )
     @GetMapping("/{privatePostId}")
-    public ResponseEntity<PrivatePostResponseDto> getPrivatePostById(@PathVariable Long id){
-        Optional<PrivatePost> postOptional = privatePostService.getPrivatePostById(id);
+    public ResponseEntity<PrivatePostResponseDto> getPrivatePostById(@PathVariable Long privatePostId){
+        Optional<PrivatePost> postOptional = privatePostService.getPrivatePostById(privatePostId);
         if (postOptional.isPresent()){
             PrivatePostResponseDto dto = PrivatePostResponseDto.from(postOptional.get());
             return ResponseEntity.ok(dto);
@@ -89,7 +89,7 @@ public class PrivatePostController{
                     @Parameter(name = "keyword", description = "[path_variable] privatePost의 keyword", required = true)
             }
     )
-    @GetMapping("/{keyword}")
+    @GetMapping("/keyword/{keyword}")
     public ResponseEntity<List<PrivatePostResponseDto>> getPrivatePostByKeyword(@PathVariable String keyword, Authentication authentication) {
         String userEmail = authentication.getName();
 
@@ -113,8 +113,8 @@ public class PrivatePostController{
             }
     )
     @DeleteMapping("/{privatePostId}")
-    public ResponseEntity<Void> deletePrivatePost(@PathVariable Long id){
-        privatePostService.deletePrivatePost(id);
+    public ResponseEntity<Void> deletePrivatePost(@PathVariable Long privatePostId){
+        privatePostService.deletePrivatePost(privatePostId);
         return ResponseEntity.noContent().build();
     }
 
