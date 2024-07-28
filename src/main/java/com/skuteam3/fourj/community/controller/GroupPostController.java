@@ -4,34 +4,46 @@ import com.skuteam3.fourj.community.domain.GroupPost;
 import com.skuteam3.fourj.community.dto.GroupPostRequestDto;
 import com.skuteam3.fourj.community.dto.GroupPostResponseDto;
 import com.skuteam3.fourj.community.service.GroupPostService;
-import com.skuteam3.fourj.jwt.provider.JwtProvider;
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "groupPosts", description = "단체 게시판 게시글 API")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/groupPost")
+@RequestMapping("/api/v1/group-posts")
 public class GroupPostController {
 
-    private final JwtProvider jwtProvider;
     private final GroupPostService groupPostService;
 
     //Create
+    @Operation(
+            summary = "단체 게시판 게시글 생성",
+            description = "유저인포에 따른 게시글을 생성합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
+                    "해당 유저의 게시글을 생성합니다."
+    )
     @PostMapping
-    public String createGroupPost(HttpServletRequest request, @RequestBody GroupPostRequestDto groupPostDto){
-        String userEmail = jwtProvider.validate(jwtProvider.parseToken(request));
+    public String createGroupPost(@RequestBody GroupPostRequestDto groupPostDto, Authentication authentication){
+        String userEmail = authentication.getName();
 
         groupPostService.createGroupPost(groupPostDto, userEmail);
         return "GroupPost created successfully";
     }
 
     //Read
+    @Operation(
+            summary = "단체 게시판 게시글 모두 조회",
+            description = "단체 게시판 게시글을 모두 조회합니다. "
+    )
     @GetMapping
     public ResponseEntity<List<GroupPostResponseDto>> getAllGroupPosts() {
         List<GroupPost> groupPosts = groupPostService.getAllGroupPosts();
@@ -43,7 +55,14 @@ public class GroupPostController {
         return ResponseEntity.ok(groupPostDtos);
     }
 
-    @GetMapping("/{id}")
+    @Operation(
+            summary = "단체 게시판 게시글 ID로 조회",
+            description = "단체 게시판 게시글을 게시글 ID로 조회합니다. ",
+            parameters = {
+                    @Parameter(name = "groupPostId", description = "[path_variable] groupPost의 Id", required = true)
+            }
+    )
+    @GetMapping("/{groupPostId}")
     public ResponseEntity<GroupPostResponseDto> getGroupPostById(@PathVariable Long id){
         Optional<GroupPost> postOptional = groupPostService.getGroupPostById(id);
         if (postOptional.isPresent()){
@@ -54,6 +73,13 @@ public class GroupPostController {
         }
     }
 
+    @Operation(
+            summary = "단체 게시판 게시글 해시태그로 조회",
+            description = "단체 게시판 게시글을 게시글의 해시태그로 조회합니다. ",
+            parameters = {
+                    @Parameter(name = "hashtag", description = "[path_variable] hashtag", required = true)
+            }
+    )
     @GetMapping("/{hashtag}")
     public ResponseEntity<List<GroupPostResponseDto>> getGroupPostByHashtag(@PathVariable String hashtag) {
         List<GroupPost> groupPosts = groupPostService.getGroupPostByHashtag(hashtag);
@@ -65,6 +91,13 @@ public class GroupPostController {
         return ResponseEntity.ok(groupPostDtos);
     }
 
+    @Operation(
+            summary = "단체 게시판 게시글 키워드로 조회",
+            description = "단체 게시판 게시글을 게시글의 제목 또는 본문에 포함된 키워드로 조회합니다. ",
+            parameters = {
+                    @Parameter(name = "keyword", description = "[path_variable] keyword", required = true)
+            }
+    )
     @GetMapping("/{keyword}")
     public ResponseEntity<List<GroupPostResponseDto>> getGroupPostByKeyword(@PathVariable String keyword) {
         List<GroupPost> groupPosts = groupPostService.getGroupPostByKeyword(keyword);
@@ -76,6 +109,14 @@ public class GroupPostController {
         return ResponseEntity.ok(groupPostDtos);
     }
 
+    @Operation(
+            summary = "단체 게시판 흑역사 베스트 게시글 조회",
+            description = "단체 게시판에서 흑역사 베스트 게시글을 조회합니다. " +
+                    "해당 게시글은 흑역사 키워드 포함, 좋아요 10개 이상의 상위 5개 게시글이 해당됩니다.",
+            parameters = {
+                    @Parameter(name = "hashtag", description = "[path_variable] hashtag", required = true)
+            }
+    )
     @GetMapping("/best/{hashtag}")
     public ResponseEntity<List<GroupPostResponseDto>> getBestTop5ByLikes(@PathVariable String hashtag) {
         List<GroupPost> groupPosts = groupPostService.getBestTop5ByLikes(hashtag);
@@ -89,7 +130,16 @@ public class GroupPostController {
 
 
     //Update
-    @PatchMapping("/{id}")
+    @Operation(
+            summary = "단체 게시판 게시글 수정",
+            description = "유저인포에 따른 단체 게시판 게시글을 수정합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
+                    "해당 유저의 유저인포의 게시글이 맞는 경우 게시글 ID로 게시글을 수정합니다.",
+            parameters = {
+                    @Parameter(name = "groupPostId", description = "[path_variable] groupPost의 Id", required = true)
+            }
+    )
+    @PatchMapping("/{groupPostId}")
     public ResponseEntity<GroupPostRequestDto> updateGroupPost(@PathVariable Long id, @RequestBody GroupPostRequestDto groupPostDto) {
         try {
             GroupPost updateGroupPost = groupPostService.updateGroupPost(id, groupPostDto);
@@ -100,7 +150,16 @@ public class GroupPostController {
     }
 
     //Delete
-    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "단체 게시판 게시글 삭제",
+            description = "유저인포에 따른 단체 게시판 게시글을 삭제합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
+                    "해당 유저의 유저인포의 게시글이 맞는 경우 게시글을 ID로 게시글을 삭제합니다.",
+            parameters = {
+                    @Parameter(name = "groupPostId", description = "[path_variable] groupPost의 Id", required = true)
+            }
+    )
+    @DeleteMapping("/{groupPostId}")
     public ResponseEntity<Void> deleteGroupPost(@PathVariable Long id){
         groupPostService.deleteGroupPost(id);
         return ResponseEntity.noContent().build();
