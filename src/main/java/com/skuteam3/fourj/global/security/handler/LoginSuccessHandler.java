@@ -32,7 +32,7 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
         response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.sendRedirect("http://localhost:8000/");
+        response.sendRedirect("http://localhost:3000/");
 
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }
