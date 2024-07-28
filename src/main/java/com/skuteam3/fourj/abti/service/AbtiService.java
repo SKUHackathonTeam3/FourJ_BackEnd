@@ -1,7 +1,8 @@
 package com.skuteam3.fourj.abti.service;
 
 import com.skuteam3.fourj.abti.domain.Abti;
-import com.skuteam3.fourj.abti.dto.AbtiDto;
+import com.skuteam3.fourj.abti.dto.AbtiRequestDto;
+import com.skuteam3.fourj.abti.dto.AbtiResponseDto;
 import com.skuteam3.fourj.abti.repository.AbtiRepository;
 import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
@@ -12,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,8 @@ public class AbtiService {
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
 
-    public AbtiDto getAbtiById(Long id) {
+    // ABTI Id값으로 ABTI 조회
+    public AbtiResponseDto getAbtiById(Long id) {
 
         Abti abti = abtiRepository.findById(id).orElse(null);
 
@@ -32,16 +33,18 @@ public class AbtiService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Abti not found");
         }
 
-        return AbtiDto.of(abti);
+        return AbtiResponseDto.of(abti);
     }
 
-    public List<AbtiDto> getAllAbti() {
+    // 모든 ABTI 조회
+    public List<AbtiResponseDto> getAllAbti() {
 
         List<Abti> abtiList = abtiRepository.findAll();
 
-        return abtiList.stream().map(AbtiDto::of).collect(Collectors.toList());
+        return abtiList.stream().map(AbtiResponseDto::of).collect(Collectors.toList());
     }
 
+    // 유저인포에 ABTI 값 저장
     public void setUserInfoAbti(String userEmail, Long id) {
 
         User user = userRepository.findByEmail(userEmail).orElse(null);
@@ -60,14 +63,16 @@ public class AbtiService {
         userInfoRepository.save(userInfo);
     }
 
-    public Long save(AbtiDto abtiDto) {
+    // ABTI 생성
+    public Long createAbti(AbtiRequestDto abtiRequestDto) {
 
-        Abti abti = abtiRepository.save(AbtiDto.toEntity(abtiDto));
+        Abti abti = abtiRepository.save(AbtiRequestDto.toEntity(abtiRequestDto));
 
         return abti.getId();
     }
 
-    public void updateAbtiById(Long id, AbtiDto dto) {
+    // ABTI Id값으로 ABTI 수정
+    public void updateAbtiById(Long id, AbtiRequestDto dto) {
 
         Abti abti = abtiRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Abti not found"));
@@ -82,7 +87,8 @@ public class AbtiService {
         abtiRepository.save(abti);
     }
 
-    public void delete(Long id) {
+    // ABTI Id값으로 ABTI 삭제
+    public void deleteAbti(Long id) {
 
         Abti abti = abtiRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Abti not found"));

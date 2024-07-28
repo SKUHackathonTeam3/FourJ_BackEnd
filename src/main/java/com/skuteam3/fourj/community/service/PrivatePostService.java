@@ -3,6 +3,7 @@ package com.skuteam3.fourj.community.service;
 import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
+import com.skuteam3.fourj.community.domain.GroupPost;
 import com.skuteam3.fourj.community.domain.PrivatePost;
 import com.skuteam3.fourj.community.dto.PrivatePostRequestDto;
 import com.skuteam3.fourj.community.dto.PrivatePostResponseDto;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -42,6 +44,11 @@ public class PrivatePostService {
     // 모든 게시글 조회
     public List<PrivatePost> getAllPrivatePosts() {
         return privatePostRepository.findAll();
+    }
+
+    // Id로 게시글 조회
+    public Optional<PrivatePost> getPrivatePostById(Long id){
+        return privatePostRepository.findById(id);
     }
 
     // 키워드로 게시글 조회
