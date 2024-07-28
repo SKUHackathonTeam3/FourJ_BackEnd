@@ -110,11 +110,12 @@ public class ChallengeController {
                     "API를 사용하는 날짜가 금주 챌린지의 목표날짜 이상인 경우 금주 챌린지를 성공으로 기록합니다. "
     )
     @PostMapping("/weekly/achieved")
-    public ResponseEntity<?> updateWeeklyChallengeAchievedSuccess(Authentication authentication) {
+    public ResponseEntity<?> updateWeeklyChallengeAchieved(Authentication authentication) {
 
+        Boolean achieved = null;
         try {
 
-            challengeService.updateWeeklyChallengeAchieved(authentication.getName(), true);
+            achieved = challengeService.updateWeeklyChallengeAchieved(authentication.getName());
         } catch (ResponseStatusException rse) {
 
             return ResponseEntity.status(rse.getStatusCode()).body(new JsonMessageResponseDto("Failed to update weekly challenge achieved: " + rse.getMessage()));
@@ -124,6 +125,6 @@ public class ChallengeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JsonMessageResponseDto("Failed to update weekly challenge achieved"));
         }
 
-        return ResponseEntity.ok(new JsonMessageResponseDto("Success to update weekly challenge achieved true"));
+        return ResponseEntity.ok(new JsonMessageResponseDto("Success to update weekly challenge achieved " + achieved.toString()));
     }
 }

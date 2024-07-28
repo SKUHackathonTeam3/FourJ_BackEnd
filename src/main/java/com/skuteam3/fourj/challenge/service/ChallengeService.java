@@ -5,6 +5,7 @@ import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.challenge.domain.WeeklyChallenge;
 import com.skuteam3.fourj.challenge.dto.WeeklyChallengeResponseDto;
 import com.skuteam3.fourj.challenge.repository.WeeklyChallengeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class ChallengeService {
     private final WeeklyChallengeRepository weeklyChallengeRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public WeeklyChallengeResponseDto createWeeklyChallenge(String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow(() ->
@@ -26,13 +28,9 @@ public class ChallengeService {
         ).getUserInfo();
         LocalDate now = LocalDate.now();
 
-        try {
 
-            if (getOngoingWeeklyChallenge(userEmail) != null) {
-
+        if (weeklyChallengeRepository.findByAchievedIsNullAndUserInfo(userInfo).isPresent()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already has an ongoing weekly challenge");
-            }
-        } catch (ResponseStatusException ignored) {
         }
 
         WeeklyChallenge weeklyChallenge = WeeklyChallenge.builder()
@@ -76,7 +74,9 @@ public class ChallengeService {
         weeklyChallengeRepository.save(weeklyChallenge);
     }
 
-    public void updateWeeklyChallengeAchieved(String userEmail, boolean achieved) {
+    public boolean updateWeeklyChallengeAchieved(String userEmail) {
+
+        Boolean achieved = null;
 
         WeeklyChallenge weeklyChallenge = weeklyChallengeRepository.findById(
                 getOngoingWeeklyChallenge(userEmail).getId()
@@ -84,17 +84,19 @@ public class ChallengeService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not have an ongoing weekly challenge")
         );
 
-        if (achieved) {
+        LocalDate today = LocalDate.now();
+        if (weeklyChallenge.getGoalDate().isAfter(today)) {
 
-            LocalDate today = LocalDate.now();
-            if (weeklyChallenge.getGoalDate().isAfter(today)) {
+            weeklyChallenge.setAchieved(false);
+            achieved = false;
+        } else {
 
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Goal date must be before today");
-            }
+            weeklyChallenge.setAchieved(true);
+            achieved = true;
         }
 
-        weeklyChallenge.setAchieved(achieved);
         weeklyChallengeRepository.save(weeklyChallenge);
+        return achieved;
     }
 
     public boolean findSuccessfulWeeklyChallenge(String userEmail) {
