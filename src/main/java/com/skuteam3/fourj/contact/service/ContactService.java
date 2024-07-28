@@ -4,10 +4,10 @@ import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.contact.domain.Contact;
-import com.skuteam3.fourj.contact.dto.ContactDto;
+import com.skuteam3.fourj.contact.dto.ContactRequestDto;
+import com.skuteam3.fourj.contact.dto.ContactResponseDto;
 import com.skuteam3.fourj.contact.repository.ContactRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Optionals;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,27 +21,33 @@ public class ContactService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Contact createContact(ContactDto contactDto, String userEmail){
+    public Contact createContact(ContactRequestDto contactRequestDto, String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
 
         Contact contact = new Contact();
-        contact.setName(contactDto.getName());
-        contact.setNumber(contactDto.getNumber());
-        contact.setIsMain(contactDto.getIsMain());
+        contact.setName(contactRequestDto.getName());
+        contact.setNumber(contactRequestDto.getNumber());
+        contact.setIsMain(contactRequestDto.getIsMain());
         contact.setUserInfo(userInfo);
 
         return contactRepository.save(contact);
     }
 
     @Transactional
-    public Contact updateContact(Long id, ContactDto contactDto){
+    public Contact updateContact(Long id, ContactRequestDto contactRequestDto){
         Optional<Contact> contactOptional = contactRepository.findById(id);
         if(contactOptional.isPresent()){
             Contact contact = contactOptional.get();
-            contact.setName(contactDto.getName());
-            contact.setNumber(contactDto.getNumber());
-            contact.setIsMain(contactDto.getIsMain());
+            if(contactRequestDto.getName() != null){
+                contact.setName(contactRequestDto.getName());
+            }
+            if(contactRequestDto.getNumber() != null){
+                contact.setNumber(contactRequestDto.getNumber());
+            }
+            if(contactRequestDto.getIsMain() != null){
+                contact.setIsMain(contactRequestDto.getIsMain());
+            }
             return contactRepository.save(contact);
         }else {
             throw new RuntimeException("Contact not found with id" + id);
