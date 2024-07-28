@@ -4,8 +4,8 @@ import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.mission.domain.Mission;
 import com.skuteam3.fourj.mission.domain.MissionCompletion;
-import com.skuteam3.fourj.mission.dto.MissionCompletionDto;
-import com.skuteam3.fourj.mission.dto.MissionDto;
+import com.skuteam3.fourj.mission.dto.MissionCompletionRequestDto;
+import com.skuteam3.fourj.mission.dto.MissionResponseDto;
 import com.skuteam3.fourj.mission.repository.MissionCompletionRepository;
 import com.skuteam3.fourj.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +27,15 @@ public class MissionService {
     private final MissionRepository missionRepository;
     private final MissionCompletionRepository missionCompletionRepository;
 
-    public List<MissionDto> getAllMissions() {
+    // mission 목록 반환
+    public List<MissionResponseDto> getAllMissions() {
         return missionRepository.findAll()
                 .stream()
-                .map(MissionDto::of)
+                .map(MissionResponseDto::of)
                 .collect(Collectors.toList());
     }
 
+    // userEmail에 해당하는 유저가 missionId에 해당하는 미션을 클리어한 기록 생성
     public void clearMission(Long missionId, String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail)
@@ -63,7 +65,8 @@ public class MissionService {
         }
     }
 
-    public List<MissionCompletionDto> getUserCompletedMissions(String userEmail) {
+    // userEmail에 해당하는 유저가 오늘 클리어한 미션 목록 반환
+    public List<MissionCompletionRequestDto> getUserCompletedMissions(String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist")).getUserInfo();
@@ -72,6 +75,6 @@ public class MissionService {
         LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 
         return missionCompletionRepository.findByUserInfoAndClearedAtBetween(userInfo, todayStart, todayEnd)
-                .stream().map(MissionCompletionDto::of).collect(Collectors.toList());
+                .stream().map(MissionCompletionRequestDto::of).collect(Collectors.toList());
     }
 }
