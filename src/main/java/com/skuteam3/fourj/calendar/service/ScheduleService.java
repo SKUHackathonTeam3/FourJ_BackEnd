@@ -3,9 +3,9 @@ package com.skuteam3.fourj.calendar.service;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.calendar.AlcoholType;
-import com.skuteam3.fourj.calendar.domain.Calendar;
 import com.skuteam3.fourj.calendar.domain.Schedule;
-import com.skuteam3.fourj.calendar.dto.ScheduleDto;
+import com.skuteam3.fourj.calendar.dto.ScheduleRequestDto;
+import com.skuteam3.fourj.calendar.dto.ScheduleResponseDto;
 import com.skuteam3.fourj.calendar.dto.WeeklyAlcoholSummaryDto;
 import com.skuteam3.fourj.calendar.repository.CalendarRepository;
 import com.skuteam3.fourj.calendar.repository.ScheduleRepository;
@@ -25,40 +25,40 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public Schedule createSchedule(ScheduleDto scheduleDto, Long calendar){
+    public Schedule createSchedule(ScheduleRequestDto scheduleRequestDto, Long calendarId){
         Schedule schedule = new Schedule();
 
-        schedule.setCalendar(calendarRepository.findById(calendar).orElseThrow(null));
-        schedule.setMemo(scheduleDto.getMemo());
-        schedule.setTodayCondition(scheduleDto.getTodayCondition());
-        schedule.setBeerAlcohol(scheduleDto.getBeerAlcohol());
-        schedule.setSojuAlcohol(scheduleDto.getSojuAlcohol());
-        schedule.setHighballAlcohol(scheduleDto.getHighballAlcohol());
-        schedule.setKaoliangAlcohol(scheduleDto.getKaoliangAlcohol());
+        schedule.setCalendar(calendarRepository.findById(calendarId).orElseThrow(null));
+        schedule.setMemo(scheduleRequestDto.getMemo());
+        schedule.setTodayCondition(scheduleRequestDto.getTodayCondition());
+        schedule.setBeerAlcohol(scheduleRequestDto.getBeerAlcohol());
+        schedule.setSojuAlcohol(scheduleRequestDto.getSojuAlcohol());
+        schedule.setHighballAlcohol(scheduleRequestDto.getHighballAlcohol());
+        schedule.setKaoliangAlcohol(scheduleRequestDto.getKaoliangAlcohol());
         return scheduleRepository.save(schedule);
     }
 
     @Transactional
-    public Schedule updateSchedule(Long id, ScheduleDto scheduleDto){
+    public Schedule updateSchedule(Long id, ScheduleRequestDto scheduleRequestDto){
         Optional<Schedule> scheduleOptional = scheduleRepository.findById(id);
         if(scheduleOptional.isPresent()){
             Schedule schedule = scheduleOptional.get();
-            if(scheduleDto.getMemo() != null){
-                scheduleDto.setMemo(scheduleDto.getMemo());
+            if(scheduleRequestDto.getMemo() != null){
+                scheduleRequestDto.setMemo(scheduleRequestDto.getMemo());
             }
-            if(scheduleDto.getBeerAlcohol() != null){
-                schedule.setBeerAlcohol(scheduleDto.getBeerAlcohol());
+            if(scheduleRequestDto.getBeerAlcohol() != null){
+                schedule.setBeerAlcohol(scheduleRequestDto.getBeerAlcohol());
             }
-            if(scheduleDto.getSojuAlcohol() != null){
-                schedule.setSojuAlcohol(scheduleDto.getSojuAlcohol());
+            if(scheduleRequestDto.getSojuAlcohol() != null){
+                schedule.setSojuAlcohol(scheduleRequestDto.getSojuAlcohol());
             }
-            if(scheduleDto.getHighballAlcohol() != null){
-                schedule.setHighballAlcohol(scheduleDto.getHighballAlcohol());
+            if(scheduleRequestDto.getHighballAlcohol() != null){
+                schedule.setHighballAlcohol(scheduleRequestDto.getHighballAlcohol());
             }
-            if(scheduleDto.getKaoliangAlcohol() != null){
-                schedule.setKaoliangAlcohol(scheduleDto.getKaoliangAlcohol());
+            if(scheduleRequestDto.getKaoliangAlcohol() != null){
+                schedule.setKaoliangAlcohol(scheduleRequestDto.getKaoliangAlcohol());
             }
-            schedule.setTodayCondition(scheduleDto.getTodayCondition());
+            schedule.setTodayCondition(scheduleRequestDto.getTodayCondition());
             return scheduleRepository.save(schedule);
         }else{
             throw new RuntimeException("Schedule not found with id" + id);
