@@ -26,6 +26,12 @@ public class UserInfo {
     @Column(name = "user_info_name")
     private String name;
 
+    @Column(name = "weekly_alcohol_amount")
+    private Double weeklyAlcoholAmount;
+
+    @Column(name = "average_alcohol_amount")
+    private Double averageAlcoholAmount;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
