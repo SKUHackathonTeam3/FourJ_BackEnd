@@ -1,22 +1,16 @@
 package com.skuteam3.fourj.challenge.service;
 
-import com.google.api.client.util.DateTime;
-import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.challenge.domain.WeeklyChallenge;
-import com.skuteam3.fourj.challenge.dto.WeeklyChallengeDto;
+import com.skuteam3.fourj.challenge.dto.WeeklyChallengeResponseDto;
 import com.skuteam3.fourj.challenge.repository.WeeklyChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +19,7 @@ public class ChallengeService {
     private final WeeklyChallengeRepository weeklyChallengeRepository;
     private final UserRepository userRepository;
 
-    public WeeklyChallengeDto createWeeklyChallenge(String userEmail) {
+    public WeeklyChallengeResponseDto createWeeklyChallenge(String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
@@ -47,10 +41,10 @@ public class ChallengeService {
                 .build();
         weeklyChallenge.setUserInfo(userInfo);
 
-        return WeeklyChallengeDto.of(weeklyChallengeRepository.save(weeklyChallenge));
+        return WeeklyChallengeResponseDto.of(weeklyChallengeRepository.save(weeklyChallenge));
     }
 
-    public WeeklyChallengeDto getOngoingWeeklyChallenge(String userEmail) {
+    public WeeklyChallengeResponseDto getOngoingWeeklyChallenge(String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
@@ -61,7 +55,7 @@ public class ChallengeService {
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not have an ongoing weekly challenge")
         );
 
-        return WeeklyChallengeDto.of(weeklyChallenge);
+        return WeeklyChallengeResponseDto.of(weeklyChallenge);
     }
 
     public void updateWeeklyChallengeEndDate(String userEmail, LocalDate endDate) {
