@@ -67,7 +67,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         Optional<SocialUser> existingUser = socialUserRepository.findByEmail(socialUser.getEmail());
         if (existingUser.isPresent() && existingUser.get().getSocialType().equals(socialUser.getSocialType())) {
-            return new CustomUserDetails(socialUser.getUser(), oAuth2User.getAttributes());
+            return new CustomUserDetails(existingUser.get().getUser(), oAuth2User.getAttributes());
         }
 
         User user = userRepository.findByEmail(userEmail).orElse(null);
