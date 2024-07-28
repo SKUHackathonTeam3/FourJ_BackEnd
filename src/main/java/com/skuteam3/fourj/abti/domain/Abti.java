@@ -1,6 +1,5 @@
 package com.skuteam3.fourj.abti.domain;
 
-import com.skuteam3.fourj.abti.dto.AbtiDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
