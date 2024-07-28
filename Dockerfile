@@ -4,4 +4,4 @@ ARG JAR_FILE=build/libs/*SNAPSHOT.jar
 
 COPY ${JAR_FILE} fourj.jar
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "/fourj.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=develop", "/fourj.jar"]
