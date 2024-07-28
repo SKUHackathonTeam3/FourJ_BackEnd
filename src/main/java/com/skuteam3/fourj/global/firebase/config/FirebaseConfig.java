@@ -1,20 +1,19 @@
 package com.skuteam3.fourj.global.firebase.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.ByteArray;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
@@ -30,12 +29,12 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
 
-        GoogleCredentials credentials = GoogleCredentials.fromStream(
-                new ByteArrayInputStream(fcmKey.getBytes(StandardCharsets.UTF_8))
-        ).createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+        ClassPathResource resource = new ClassPathResource(fcmKey);
+
+        InputStream credentials = resource.getInputStream();
 
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(credentials)
+                .setCredentials(GoogleCredentials.fromStream(credentials))
                 .build();
 
         return FirebaseApp.initializeApp(options);
