@@ -4,7 +4,8 @@ import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.calendar.domain.Calendar;
-import com.skuteam3.fourj.calendar.dto.CalendarDto;
+import com.skuteam3.fourj.calendar.dto.CalendarRequestDto;
+import com.skuteam3.fourj.calendar.dto.CalendarResponseDto;
 import com.skuteam3.fourj.calendar.repository.CalendarRepository;
 import com.skuteam3.fourj.challenge.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
@@ -22,20 +23,20 @@ public class CalendarService {
     private final ChallengeService challengeService;
 
     @Transactional
-    public Calendar createCalendar(CalendarDto calendarDto, String userEmail){
+    public Calendar createCalendar(CalendarRequestDto calendarRequestDto, String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
 
         Calendar calendar = new Calendar();
-        calendar.setYear(calendarDto.getYear());
-        calendar.setMonth(calendarDto.getMonth());
-        calendar.setDay(calendarDto.getDay());
+        calendar.setYear(calendarRequestDto.getYear());
+        calendar.setMonth(calendarRequestDto.getMonth());
+        calendar.setDay(calendarRequestDto.getDay());
         calendar.setUserInfo(userInfo);
 
         try {
 
             if (challengeService.getOngoingWeeklyChallenge(userEmail) != null) {
-                LocalDate endDate = LocalDate.of(calendarDto.getYear(), calendarDto.getMonth(), calendarDto.getDay());
+                LocalDate endDate = LocalDate.of(calendarRequestDto.getYear(), calendarRequestDto.getMonth(), calendarRequestDto.getDay());
                 challengeService.updateWeeklyChallengeEndDate(userEmail, endDate);
             }
         } catch (Exception ignored) {
@@ -45,13 +46,13 @@ public class CalendarService {
     }
 
     @Transactional
-    public Calendar updateCalendar(Long id, CalendarDto calendarDto){
+    public Calendar updateCalendar(Long id, CalendarRequestDto calendarRequestDto){
         Optional<Calendar> calendarOptional = calendarRepository.findById(id);
         if (calendarOptional.isPresent()) {
             Calendar calendar = calendarOptional.get();
-            calendar.setYear(calendarDto.getYear());
-            calendar.setMonth(calendarDto.getMonth());
-            calendar.setDay(calendarDto.getDay());
+            calendar.setYear(calendarRequestDto.getYear());
+            calendar.setMonth(calendarRequestDto.getMonth());
+            calendar.setDay(calendarRequestDto.getDay());
             return calendarRepository.save(calendar);
         }else {
             throw new RuntimeException("Calendar not found with id" + id);
