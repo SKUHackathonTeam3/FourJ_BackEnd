@@ -69,9 +69,9 @@ public class ContactController {
             }
     )
     @PatchMapping("/{contactId}")
-    public ResponseEntity<ContactResponseDto> updateContact(@PathVariable Long id, @RequestBody ContactRequestDto contactRequestDto){
+    public ResponseEntity<ContactResponseDto> updateContact(@PathVariable Long contactId, @RequestBody ContactRequestDto contactRequestDto){
         try{
-            Contact updateContact = contactService.updateContact(id, contactRequestDto);
+            Contact updateContact = contactService.updateContact(contactId, contactRequestDto);
             return ResponseEntity.ok(ContactResponseDto.from(updateContact));
         } catch (RuntimeException e){
             return ResponseEntity.notFound().build();
@@ -89,8 +89,8 @@ public class ContactController {
             }
     )
     @DeleteMapping("/{contactId}")
-    public ResponseEntity<Void> deleteContact(@PathVariable Long id){
-        contactService.deleteContact(id);
+    public ResponseEntity<Void> deleteContact(@PathVariable Long contactId){
+        contactService.deleteContact(contactId);
         return ResponseEntity.noContent().build();
     }
 

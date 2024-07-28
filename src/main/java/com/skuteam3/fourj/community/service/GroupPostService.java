@@ -26,6 +26,10 @@ public class GroupPostService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
 
+        if (userInfo.getAbti() == null) {
+            return null;
+        }
+
         GroupPost groupPost = new GroupPost();
 
         groupPost.setTitle(groupPostDto.getTitle());
