@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class PrivatePostRequestDto {
     private String contents;
 
+
     public static PrivatePostResponseDto from(PrivatePost privatePost){
         PrivatePostResponseDto privatePostDto = new PrivatePostResponseDto();
         privatePostDto.setContents(privatePost.getContents());
