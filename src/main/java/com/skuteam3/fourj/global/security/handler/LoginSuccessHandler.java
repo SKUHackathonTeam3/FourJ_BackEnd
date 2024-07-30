@@ -1,5 +1,8 @@
 package com.skuteam3.fourj.global.security.handler;
 
+import com.skuteam3.fourj.account.domain.User;
+import com.skuteam3.fourj.account.domain.UserInfo;
+import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.jwt.TokenType;
 import com.skuteam3.fourj.jwt.provider.JwtProvider;
 import jakarta.servlet.ServletException;
@@ -12,15 +15,25 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
+        Optional<User> userOptional = userRepository.findByEmail(authentication.getName());
+        if (userOptional.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
+            return;
+        }
+        UserInfo userInfo = userOptional.get().getUserInfo();
+
         String accessToken = jwtProvider.createToken(authentication.getName(), TokenType.ACCESS_TOKEN);
         String refreshToken = jwtProvider.createToken(authentication.getName(), TokenType.REFRESH_TOKEN);
 
@@ -32,8 +45,12 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
         response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.sendRedirect("http://localhost:3000/");
 
+        if (userInfo.getAbti() == null) {
+            response.sendRedirect("http://localhost:5173/test");
+        } else {
+            response.sendRedirect("http://localhost:5173/home");
+        }
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }
 }
