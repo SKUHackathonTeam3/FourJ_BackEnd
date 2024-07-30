@@ -36,7 +36,7 @@ public class UserInfo {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
     private User user;
 
     @Builder
