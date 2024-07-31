@@ -47,10 +47,15 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         response.setHeader("Authorization", "Bearer " + accessToken);
 
         if (userInfo.getAbti() == null) {
-            response.sendRedirect("http://localhost:5173/test");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("Need ABTI");
+            response.getWriter().flush();
         } else {
-            response.sendRedirect("http://localhost:5173/home");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("Login successful");
+            response.getWriter().flush();
         }
+        
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }
 }
