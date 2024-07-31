@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   CI-CD:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     # JDK setting - github actions에서 사용할 JDK 설정 (aws 과 project의 java 버전과 별도로 관리)
     - uses: actions/checkout@v3
