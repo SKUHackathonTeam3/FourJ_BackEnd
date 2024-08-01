@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -177,9 +178,16 @@ public class AbtiController {
     @PatchMapping("/abtis/userinfos/{abtiId}")
     public ResponseEntity<?> updateUserInfoAbti(Authentication authentication, @PathVariable Long abtiId) {
 
+        String userEmail;
         try {
 
-            String userEmail = authentication.getName();
+            try {
+
+                userEmail = authentication.getName();
+            } catch (Exception e) {
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
 
             abtiService.setUserInfoAbti(userEmail, abtiId);
 
