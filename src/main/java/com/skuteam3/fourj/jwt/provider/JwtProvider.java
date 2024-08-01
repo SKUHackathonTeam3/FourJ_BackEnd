@@ -76,7 +76,7 @@ public class JwtProvider {
 
     public String parseToken(HttpServletRequest request) {
 
-        String bearerToken = request.getHeader("Authentication");
+        String bearerToken = request.getHeader("Authorization");
 
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
 
