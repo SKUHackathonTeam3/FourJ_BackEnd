@@ -1,5 +1,6 @@
 package com.skuteam3.fourj.global.security.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
@@ -15,6 +16,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -23,6 +26,7 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -46,16 +50,15 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
 
-        if (userInfo.getAbti() == null) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("Need ABTI");
-            response.getWriter().flush();
-        } else {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("Login successful");
-            response.getWriter().flush();
-        }
-        
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("accessToken", accessToken);
+        responseBody.put("message", userInfo.getAbti() == null ? "Need ABTI" : "Login successful");
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+        response.getWriter().flush();
+
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }
 }
