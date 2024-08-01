@@ -50,10 +50,19 @@ public class ChallengeController {
     public ResponseEntity<?> getWeeklyChallengeInfo(Authentication authentication) {
 
         WeeklyChallengeResponseDto dto = null;
+        String userEmail;
 
         try {
 
-            dto = challengeService.getOngoingWeeklyChallenge(authentication.getName());
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+
+            dto = challengeService.getOngoingWeeklyChallenge(userEmail);
         } catch (ResponseStatusException rse) {
 
             return ResponseEntity.status(rse.getStatusCode()).body(new JsonMessageResponseDto("Failed to get weekly challenge: " + rse.getMessage()));
@@ -86,10 +95,19 @@ public class ChallengeController {
     public ResponseEntity<?> createWeeklyChallenge(Authentication authentication) {
 
         WeeklyChallengeResponseDto dto = null;
+        String userEmail;
 
         try {
 
-            dto = challengeService.createWeeklyChallenge(authentication.getName());
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+
+            dto = challengeService.createWeeklyChallenge(userEmail);
         } catch (ResponseStatusException rse) {
 
             return ResponseEntity.status(rse.getStatusCode()).body(new JsonMessageResponseDto("Failed to create weekly challenge: " + rse.getMessage()));
@@ -113,9 +131,19 @@ public class ChallengeController {
     public ResponseEntity<?> updateWeeklyChallengeAchieved(Authentication authentication) {
 
         Boolean achieved = null;
+        String userEmail;
+
         try {
 
-            achieved = challengeService.updateWeeklyChallengeAchieved(authentication.getName());
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+
+            achieved = challengeService.updateWeeklyChallengeAchieved(userEmail);
         } catch (ResponseStatusException rse) {
 
             return ResponseEntity.status(rse.getStatusCode()).body(new JsonMessageResponseDto("Failed to update weekly challenge achieved: " + rse.getMessage()));

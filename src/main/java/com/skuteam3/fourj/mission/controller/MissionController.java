@@ -77,7 +77,14 @@ public class MissionController {
     @PostMapping("/{missionId}/clear")
     public ResponseEntity<?> clearMissions(Authentication authentication, @PathVariable Long missionId) {
 
-        String userEmail = authentication.getName();
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         try {
 
@@ -110,7 +117,15 @@ public class MissionController {
                             )))})
     @GetMapping("/completed")
     public ResponseEntity<?> getCompletedMissions(Authentication authentication) {
-        String userEmail = authentication.getName();
+
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         try {
 
