@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,14 +44,25 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         String userEmail = "";
 
         if (oauthClientName.equals("naver")) {
-            Object response = oAuth2User.getAttributes().get("response");
-            if (response instanceof Map<?,?> responseMap) {
-                userId = ((String) responseMap.get("id")).substring(0, ((String)responseMap.get("id")).length() - 1);
-                userName = (String) responseMap.get("name");
-                userEmail = (String) responseMap.get("email");
-                socialUser = SocialUser.builder().email(userEmail).socialType(SocialType.NAVER).providerId(userId).build();
-            }
+            LinkedHashMap attributes = (LinkedHashMap) oAuth2User.getAttributes().get("response");
+
+            userId = ((String) attributes.get("id")).substring(0, ((String)attributes.get("id")).length() - 1);
+            userName = (String) attributes.get("name");
+            userEmail = (String) attributes.get("email");
+            socialUser = SocialUser.builder().email(userEmail).socialType(SocialType.NAVER).providerId(userId).build();
         }
+        else if (oauthClientName.equals("kakao")) {
+            Map<String, Object> attributes = oAuth2User.getAttributes();
+
+            userId = ((Long) attributes.get("id")).toString();
+            LinkedHashMap linkedHashMap = (LinkedHashMap) attributes.get("properties");
+            userName = (String) linkedHashMap.get("nickname");
+            linkedHashMap = (LinkedHashMap) attributes.get("kakao_account");
+            userEmail = (String) linkedHashMap.get("email");
+
+            socialUser = SocialUser.builder().email(userEmail).socialType(SocialType.KAKAO).providerId(userId).build();
+        }
+
         else if(oauthClientName.equals("google")) {
             userId = oAuth2User.getAttribute("sub");
             userEmail = oAuth2User.getAttribute("email");
