@@ -1,8 +1,7 @@
 package com.skuteam3.fourj.mission.controller;
 
-import com.skuteam3.fourj.abti.dto.AbtiResponseDto;
+import com.google.rpc.context.AttributeContext;
 import com.skuteam3.fourj.global.message.dto.JsonMessageResponseDto;
-import com.skuteam3.fourj.mission.dto.MissionCompletionRequestDto;
 import com.skuteam3.fourj.mission.dto.MissionCompletionResponseDto;
 import com.skuteam3.fourj.mission.dto.MissionResponseDto;
 import com.skuteam3.fourj.mission.service.MissionService;
@@ -60,10 +59,6 @@ public class MissionController {
         }
     }
 
-
-    // MissionCompletion에 대한 메서드
-
-
     // 미션 클리어 기록 생성
     @Operation(
             summary = "미션 클리어 기록 생성",
@@ -115,7 +110,7 @@ public class MissionController {
                             array = @ArraySchema(
                                     schema = @Schema(implementation = MissionCompletionResponseDto.class)
                             )))})
-    @GetMapping("/completed")
+    @GetMapping("/completed/today")
     public ResponseEntity<?> getCompletedMissions(Authentication authentication) {
 
         String userEmail;
@@ -139,7 +134,42 @@ public class MissionController {
         }
     }
 
+    // 유저가 클리어한 모든 미션 조회
+    @Operation(
+            summary = "클리어한 모든 미션 목록 조회",
+            description = "로그인한 유저의 클리어한 모든 미션 목록을 조회합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
+                    "해당 유저의 클리어한 모든 미션의 목록을 조회합니다. "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "All Completed Missions returned successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = MissionCompletionResponseDto.class)
+                            )))})
+    @PostMapping("/completed")
+    public ResponseEntity<?> getAllCompletedMissions(Authentication authentication) {
 
+        String userEmail;
+        try {
 
+            userEmail = authentication.getName();
+        } catch (Exception e) {
 
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+
+            return ResponseEntity.ok(missionService.getAllCompletedMissions(userEmail));
+        } catch (ResponseStatusException rse) {
+
+            return ResponseEntity.status(rse.getStatusCode()).body(new JsonMessageResponseDto("Failed to get all completed missions: " + rse.getMessage()));
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JsonMessageResponseDto("Failed to get all completed missions"));
+        }
+    }
 }
