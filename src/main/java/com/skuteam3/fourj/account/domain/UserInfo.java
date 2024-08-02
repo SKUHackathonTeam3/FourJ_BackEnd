@@ -7,8 +7,10 @@ import com.skuteam3.fourj.community.domain.PrivatePost;
 import com.skuteam3.fourj.contact.domain.Contact;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,13 @@ public class UserInfo {
     @Column(name = "average_alcohol_amount")
     private Double averageAlcoholAmount;
 
+    @ColumnDefault("0")
+    @Column(name = "continues_attendance_days")
+    private Integer continuousAttendanceDays = 0;
+
+    @Column(name = "last_attendance_date")
+    private LocalDate lastAttendanceDate;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -44,6 +53,7 @@ public class UserInfo {
         this.name = name;
         this.user = user;
     }
+
 
     // Feature 추가할 때 아래 추가하기!!!
   
