@@ -58,8 +58,8 @@ public class UserInfo {
     // Feature 추가할 때 아래 추가하기!!!
   
     // Calendar
-    @OneToOne(mappedBy = "userInfo")
-    private Calendar calendar;
+    @OneToMany(mappedBy = "userInfo")
+    private List<Calendar> calendar;
 
     // ABTI
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

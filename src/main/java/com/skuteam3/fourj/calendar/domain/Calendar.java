@@ -11,6 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "calendar", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"year", "month", "day", "User_id"})
+})
 public class Calendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +27,7 @@ public class Calendar {
     @OneToMany(mappedBy="calendar")
     private List<Schedule> schedule = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="User_id")
     private UserInfo userInfo;
 
