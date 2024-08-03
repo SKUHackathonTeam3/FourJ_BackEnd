@@ -6,6 +6,8 @@ import com.skuteam3.fourj.contact.dto.ContactResponseDto;
 import com.skuteam3.fourj.contact.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -40,11 +42,11 @@ public class ContactController {
                             schema = @Schema(implementation = ContactResponseDto.class)
                     ))})
     @PostMapping
-    public String createContact(Authentication authentication, @RequestBody ContactRequestDto contactRequestDto){
+    public ResponseEntity<?> createContact(Authentication authentication, @RequestBody ContactRequestDto contactRequestDto){
         String userEmail = authentication.getName();
 
-        contactService.createContact(contactRequestDto, userEmail);
-        return ResponseEntity.ok(ContactResponseDto);
+        ContactResponseDto responseDto = contactService.createContact(contactRequestDto, userEmail);
+        return ResponseEntity.ok(responseDto);
     }
 
     //Read

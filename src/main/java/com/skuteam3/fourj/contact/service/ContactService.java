@@ -31,6 +31,16 @@ public class ContactService {
         contact.setIsMain(contactRequestDto.getIsMain());
         contact.setUserInfo(userInfo);
 
+        if (contactRequestDto.getIsMain()) {
+            Optional<Contact> optionalIsMainContact = contactRepository.findContactByUserInfoAndIsMain(userInfo, true);
+            if (optionalIsMainContact.isPresent()) {
+                Contact isMainContact = optionalIsMainContact.get();
+                isMainContact.setIsMain(false);
+
+                contactRepository.save(isMainContact);
+            }
+        }
+
         return ContactResponseDto.from(contactRepository.save(contact));
     }
 
@@ -46,8 +56,21 @@ public class ContactService {
                 contact.setNumber(contactRequestDto.getNumber());
             }
             if(contactRequestDto.getIsMain() != null){
+                if (contactRequestDto.getIsMain()) {
+
+                    Optional<Contact> optionalIsMainContact = contactRepository.findContactByIdAndIsMain(id, true);
+                    if (optionalIsMainContact.isPresent()) {
+
+                        Contact isMainContact = optionalIsMainContact.get();
+                        isMainContact.setIsMain(false);
+
+                        contactRepository.save(isMainContact);
+                    }
+                }
+
                 contact.setIsMain(contactRequestDto.getIsMain());
             }
+
             return contactRepository.save(contact);
         }else {
             throw new RuntimeException("Contact not found with id" + id);

@@ -1,16 +1,24 @@
 package com.skuteam3.fourj.community.controller;
 
+import com.skuteam3.fourj.attendance.dto.AttendanceListRequestDto;
 import com.skuteam3.fourj.community.domain.GroupPost;
 import com.skuteam3.fourj.community.dto.GroupPostRequestDto;
 import com.skuteam3.fourj.community.dto.GroupPostResponseDto;
 import com.skuteam3.fourj.community.service.GroupPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +39,19 @@ public class GroupPostController {
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
                     "해당 유저의 게시글을 생성합니다.(유저의 ABTI를 닉네임으로 사용하므로, ABTI를 설정한 후 사용할 수 있습니다.)"
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "단체 게시판 게시글 생성 Response",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GroupPostResponseDto.class)
+                    ))})
     @PostMapping
-    public String createGroupPost(@RequestBody GroupPostRequestDto groupPostDto, Authentication authentication){
+    public ResponseEntity<?> createGroupPost(@RequestBody GroupPostRequestDto groupPostDto, Authentication authentication){
+
         String userEmail = authentication.getName();
 
-        if (groupPostService.createGroupPost(groupPostDto, userEmail) == null) {
-            return "GroupPost created failed: User dose not set the Abti";
-        }
-        return "GroupPost created successfully";
+        return ResponseEntity.status(HttpStatus.CREATED).body(groupPostService.createGroupPost(groupPostDto, userEmail));
     }
 
     //Read
@@ -47,6 +60,13 @@ public class GroupPostController {
             description = "단체 게시판 게시글을 모두 조회합니다. " +
                     "유저의 ABTI가 설정되어 있지 않은 경우 에러가 발생합니다."
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "단체 게시판 게시글 모두 조회 Response",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GroupPostResponseDto.class)
+                    ))})
     @GetMapping
     public ResponseEntity<List<GroupPostResponseDto>> getAllGroupPosts() {
         List<GroupPost> groupPosts = groupPostService.getAllGroupPosts();

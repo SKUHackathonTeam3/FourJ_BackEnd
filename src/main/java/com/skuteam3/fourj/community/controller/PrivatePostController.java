@@ -1,13 +1,19 @@
 package com.skuteam3.fourj.community.controller;
 
 import com.skuteam3.fourj.community.domain.PrivatePost;
+import com.skuteam3.fourj.community.dto.GroupPostResponseDto;
 import com.skuteam3.fourj.community.dto.PrivatePostRequestDto;
 import com.skuteam3.fourj.community.dto.PrivatePostResponseDto;
 import com.skuteam3.fourj.community.service.PrivatePostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -31,12 +37,19 @@ public class PrivatePostController{
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
                     "해당 유저의 게시글을 생성합니다."
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "혼잣말 게시판 게시글 생성 Response",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PrivatePostResponseDto.class)
+                    ))})
     @PostMapping
-    public String createPrivatePost(@RequestBody PrivatePostRequestDto privatePostRequestDto, Authentication authentication){
+    public ResponseEntity<?> createPrivatePost(@RequestBody PrivatePostRequestDto privatePostRequestDto, Authentication authentication){
+
         String userEmail = authentication.getName();
 
-        privatePostService.createPrivatePost(privatePostRequestDto, userEmail);
-        return "PrivatePost created successfully";
+        return ResponseEntity.status(HttpStatus.CREATED).body(privatePostService.createPrivatePost(privatePostRequestDto, userEmail));
     }
 
     //Read
