@@ -21,7 +21,7 @@ public class ContactService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Contact createContact(ContactRequestDto contactRequestDto, String userEmail){
+    public ContactResponseDto createContact(ContactRequestDto contactRequestDto, String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
 
@@ -31,7 +31,7 @@ public class ContactService {
         contact.setIsMain(contactRequestDto.getIsMain());
         contact.setUserInfo(userInfo);
 
-        return contactRepository.save(contact);
+        return ContactResponseDto.from(contactRepository.save(contact));
     }
 
     @Transactional
