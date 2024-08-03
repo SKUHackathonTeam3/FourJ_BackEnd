@@ -81,16 +81,6 @@ public class ChallengeController {
                     "해당 유저와 금주 챌린지를 연결하여 생성합니다. " +
                     "금주 챌린지는 생성한 날짜를 기준으로 +14일을 목표 날짜로 생성합니다."
     )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200", description = "금주 챌린지 생성 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = WeeklyChallengeResponseDto.class)
-                    )
-
-            ),
-    })
     @PostMapping("/weekly")
     public ResponseEntity<?> createWeeklyChallenge(Authentication authentication) {
 
@@ -117,7 +107,7 @@ public class ChallengeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JsonMessageResponseDto("Failed to create weekly challenge"));
         }
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(
