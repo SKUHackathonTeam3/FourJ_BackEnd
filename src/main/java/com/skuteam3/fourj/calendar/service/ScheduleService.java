@@ -81,6 +81,8 @@ public class ScheduleService {
         return calendarRepository.findScheduleByYearAndMonthAndDayAndUserInfo(year, month, day, userInfo).orElseThrow().getSchedule();
     }
 
+
+    //주간 음주량 계산
     public Double calculateWeeklyAlcohol(int year, int month, int startDate, int endDate, String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow().getUserInfo();

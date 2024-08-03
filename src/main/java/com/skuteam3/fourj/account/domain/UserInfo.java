@@ -67,4 +67,5 @@ public class UserInfo {
     //PrivatePost
     @OneToMany(mappedBy = "userInfo")
     List<PrivatePost> privatePosts  = new ArrayList<>();
+
 }
