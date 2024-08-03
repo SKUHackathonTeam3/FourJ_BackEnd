@@ -30,12 +30,19 @@ public class ContactController {
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
                     "해당 유저의 유저인포와 contact를 연결하여 저장합니다."
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "비상 연락망 생성 Response",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ContactResponseDto.class)
+                    ))})
     @PostMapping
     public String createContact(Authentication authentication, @RequestBody ContactRequestDto contactRequestDto){
         String userEmail = authentication.getName();
 
         contactService.createContact(contactRequestDto, userEmail);
-        return "Contact created successfully";
+        return ResponseEntity.ok(ContactResponseDto);
     }
 
     //Read
