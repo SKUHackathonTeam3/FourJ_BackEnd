@@ -6,7 +6,11 @@ import com.skuteam3.fourj.contact.dto.ContactResponseDto;
 import com.skuteam3.fourj.contact.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,12 +34,19 @@ public class ContactController {
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
                     "해당 유저의 유저인포와 contact를 연결하여 저장합니다."
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "비상 연락망 생성 Response",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ContactResponseDto.class)
+                    ))})
     @PostMapping
-    public String createContact(Authentication authentication, @RequestBody ContactRequestDto contactRequestDto){
+    public ResponseEntity<?> createContact(Authentication authentication, @RequestBody ContactRequestDto contactRequestDto){
         String userEmail = authentication.getName();
 
-        contactService.createContact(contactRequestDto, userEmail);
-        return "Contact created successfully";
+        ContactResponseDto responseDto = contactService.createContact(contactRequestDto, userEmail);
+        return ResponseEntity.ok(responseDto);
     }
 
     //Read
