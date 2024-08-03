@@ -5,11 +5,14 @@ import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.community.dto.GroupPostRequestDto;
 import com.skuteam3.fourj.community.domain.GroupPost;
+import com.skuteam3.fourj.community.dto.GroupPostResponseDto;
 import com.skuteam3.fourj.community.repository.GroupPostRepository;
 import com.skuteam3.fourj.community.repository.LikesRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +25,12 @@ public class GroupPostService {
     private final LikesRepository likesRepository;
 
     @Transactional
-    public GroupPost createGroupPost(GroupPostRequestDto groupPostDto, String userEmail){
+    public GroupPostResponseDto createGroupPost(GroupPostRequestDto groupPostDto, String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
 
         if (userInfo.getAbti() == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "GroupPost created failed: User dose not set the Abti");
         }
 
         GroupPost groupPost = new GroupPost();
@@ -37,7 +40,7 @@ public class GroupPostService {
         groupPost.setHashtag(groupPostDto.getHashtag());
         groupPost.setUserInfo(userInfo);
 
-        return groupPostRepository.save(groupPost);
+        return GroupPostResponseDto.from(groupPostRepository.save(groupPost), 0);
     }
 
     @Transactional

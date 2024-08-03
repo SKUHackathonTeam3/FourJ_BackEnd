@@ -23,7 +23,7 @@ public class PrivatePostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public PrivatePost createPrivatePost(PrivatePostRequestDto privatePostRequestDto, String userEmail){
+    public PrivatePostResponseDto createPrivatePost(PrivatePostRequestDto privatePostRequestDto, String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
 
@@ -32,7 +32,7 @@ public class PrivatePostService {
         privatePost.setContents(privatePostRequestDto.getContents());
         privatePost.setUserInfo(userInfo);
 
-        return privatePostRepository.save(privatePost);
+        return PrivatePostResponseDto.from(privatePostRepository.save(privatePost));
     }
 
     @Transactional
