@@ -27,7 +27,6 @@ public class CalendarService {
     private final UserRepository userRepository;
     private final ChallengeService challengeService;
 
-    @Transactional
     public void createCalendar(CalendarRequestDto calendarRequestDto, String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();

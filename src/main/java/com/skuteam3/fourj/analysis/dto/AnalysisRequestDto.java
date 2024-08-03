@@ -10,7 +10,6 @@ public class AnalysisRequestDto {
     private int year;
     private int month;
     private int startDate;
-    private int endDate;
     private Double averageAlcoholAmount;
 
 }

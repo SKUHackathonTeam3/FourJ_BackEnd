@@ -14,12 +14,14 @@ public class AnalysisResponseDto {
     private int month;
     private int day;
     private String memo;
+    private double alcohol;
 
-    public AnalysisResponseDto(int month, int day, String memo) {
+    public AnalysisResponseDto(int month, int day, String memo, double alcohol) {
 
         this.month = month;
         this.day = day;
         this.memo = memo;
+        this.alcohol = alcohol;
     }
 
 

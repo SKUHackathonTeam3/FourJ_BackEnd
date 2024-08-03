@@ -5,7 +5,6 @@ import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.calendar.AlcoholType;
 import com.skuteam3.fourj.calendar.domain.Schedule;
 import com.skuteam3.fourj.calendar.dto.ScheduleRequestDto;
-import com.skuteam3.fourj.calendar.dto.ScheduleResponseDto;
 import com.skuteam3.fourj.calendar.dto.WeeklyAlcoholSummaryDto;
 import com.skuteam3.fourj.calendar.repository.CalendarRepository;
 import com.skuteam3.fourj.calendar.repository.ScheduleRepository;
@@ -86,12 +85,39 @@ public class ScheduleService {
     public Double calculateWeeklyAlcohol(int year, int month, int startDate, int endDate, String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow().getUserInfo();
-
         WeeklyAlcoholSummaryDto weeklyAlcoholSummary = scheduleRepository.getWeeklyAlcoholSummary(year, month, startDate, endDate, userInfo);
-        Double totalBeer = 0.0;
-        Double totalSoju = 0.0;
-        Double totalHighball = 0.0;
-        Double totalKaoliang = 0.0;
+
+        double totalAlcohol = this.calculateAlcohol(weeklyAlcoholSummary);
+
+        return Math.round(totalAlcohol * 10) / 10.0;
+
+    }
+
+    public Double calculateScheduleAlcohol(Long id) {
+        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
+        Schedule schedule;
+        if (optionalSchedule.isPresent()) {
+            schedule = optionalSchedule.get();
+        } else return null;
+
+        WeeklyAlcoholSummaryDto weeklyAlcoholSummaryDto = WeeklyAlcoholSummaryDto.builder()
+                .beer(schedule.getBeerAlcohol())
+                .soju(schedule.getSojuAlcohol())
+                .highball(schedule.getHighballAlcohol())
+                .kaoliang(schedule.getKaoliangAlcohol())
+                .build();
+
+        double totalAlcohol = this.calculateAlcohol(weeklyAlcoholSummaryDto);
+
+        return Math.round(totalAlcohol * 10) / 10.0;
+
+    }
+
+    public double calculateAlcohol(WeeklyAlcoholSummaryDto weeklyAlcoholSummary) {
+        double totalBeer = 0.0;
+        double totalSoju = 0.0;
+        double totalHighball = 0.0;
+        double totalKaoliang = 0.0;
 
         if (weeklyAlcoholSummary.getBeer() != null) {
             totalBeer = AlcoholType.BEER.getPercentage() * AlcoholType.BEER.getMl() * weeklyAlcoholSummary.getBeer();
@@ -110,10 +136,6 @@ public class ScheduleService {
             return 0.0;
         }
 
-        Double totalAlcohol = (totalBeer + totalSoju + totalHighball + totalKaoliang) / (AlcoholType.SOJU.getPercentage() * AlcoholType.SOJU.getMl());
-
-        return Math.round(totalAlcohol * 10) / 10.0;
-
+        return (totalBeer + totalSoju + totalHighball + totalKaoliang) / (AlcoholType.SOJU.getPercentage() * AlcoholType.SOJU.getMl());
     }
-
 }
