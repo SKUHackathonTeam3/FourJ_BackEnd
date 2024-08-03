@@ -100,7 +100,7 @@ public class WebSecurityConfig {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(
                 List.of(
-                        "https://jujeokjujeok.netlify.app"
+                        "https://jujeokjujeok.netlify.app",
                         "http://localhost:5173",
                         "http://localhost:8080",
                         "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
