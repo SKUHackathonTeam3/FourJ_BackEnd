@@ -28,14 +28,17 @@ public class Abti {
     @Column(name="improving_description3")
     private String improvingDescription3;
 
+    private String image;
+
     @Builder
-    public Abti(String title, String description, String detail, String improvingDescription1, String improvingDescription2, String improvingDescription3) {
+    public Abti(String title, String description, String detail, String improvingDescription1, String improvingDescription2, String improvingDescription3, String image) {
         this.title = title;
         this.description = description;
         this.detail = detail;
         this.improvingDescription1 = improvingDescription1;
         this.improvingDescription2 = improvingDescription2;
         this.improvingDescription3 = improvingDescription3;
+        this.image = image;
     }
 
 }
