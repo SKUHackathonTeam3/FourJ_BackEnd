@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,14 @@ public class UserInfoController {
     @PatchMapping("/user-name")
     public ResponseEntity<?> updateUserInfoName(Authentication authentication, @RequestBody UpdateNameDto updateNameDto) {
 
-        String userEmail = authentication.getName();
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         try {
 
@@ -56,7 +64,15 @@ public class UserInfoController {
     )
     @PatchMapping("/user-drink-amount")
     public ResponseEntity<?> updateUserInfoDrinkAmount(Authentication authentication, @RequestBody UpdateDrinkAmountDto updateDrinkAmountDto) {
-        String userEmail = authentication.getName();
+
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         try {
 

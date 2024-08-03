@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ChallengeService {
@@ -20,7 +21,6 @@ public class ChallengeService {
     private final WeeklyChallengeRepository weeklyChallengeRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public WeeklyChallengeResponseDto createWeeklyChallenge(String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow(() ->

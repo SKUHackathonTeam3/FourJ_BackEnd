@@ -5,6 +5,7 @@ import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.mission.domain.Mission;
 import com.skuteam3.fourj.mission.domain.MissionCompletion;
 import com.skuteam3.fourj.mission.dto.MissionCompletionRequestDto;
+import com.skuteam3.fourj.mission.dto.MissionCompletionResponseDto;
 import com.skuteam3.fourj.mission.dto.MissionResponseDto;
 import com.skuteam3.fourj.mission.repository.MissionCompletionRepository;
 import com.skuteam3.fourj.mission.repository.MissionRepository;
@@ -66,7 +67,7 @@ public class MissionService {
     }
 
     // userEmail에 해당하는 유저가 오늘 클리어한 미션 목록 반환
-    public List<MissionCompletionRequestDto> getUserCompletedMissions(String userEmail) {
+    public List<MissionCompletionResponseDto> getUserCompletedMissions(String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist")).getUserInfo();
@@ -75,6 +76,16 @@ public class MissionService {
         LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 
         return missionCompletionRepository.findByUserInfoAndClearedAtBetween(userInfo, todayStart, todayEnd)
-                .stream().map(MissionCompletionRequestDto::of).collect(Collectors.toList());
+                .stream().map(MissionCompletionResponseDto::of).collect(Collectors.toList());
+    }
+
+    // userEmail에 해당하는 유저의 모든 클리어 미션 목록 반환
+    public List<MissionCompletionResponseDto> getAllCompletedMissions(String userEmail) {
+
+        UserInfo userInfo = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User does not exist")).getUserInfo();
+
+        return missionCompletionRepository.findByUserInfo(userInfo)
+                .stream().map(MissionCompletionResponseDto::of).collect(Collectors.toList());
     }
 }

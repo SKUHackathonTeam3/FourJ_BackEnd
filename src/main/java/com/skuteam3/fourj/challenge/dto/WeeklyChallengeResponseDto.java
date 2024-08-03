@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
 @Data
 public class WeeklyChallengeResponseDto {
@@ -19,14 +21,17 @@ public class WeeklyChallengeResponseDto {
     private LocalDate goalDate;
     @Schema(description="달성 여부", example="true")
     private Boolean achieved;
+    @Schema(description="남은 일수", example="14")
+    private int remainingDate;
 
     @Builder
-    public WeeklyChallengeResponseDto(Long id, LocalDate startDate, LocalDate endDate, LocalDate goalDate, Boolean achieved) {
+    public WeeklyChallengeResponseDto(Long id, LocalDate startDate, LocalDate endDate, LocalDate goalDate, Boolean achieved, int remainingDate) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.goalDate = goalDate;
         this.achieved = achieved;
+        this.remainingDate = remainingDate;
     }
 
     public static WeeklyChallenge toEntity(WeeklyChallengeResponseDto dto) {
@@ -40,12 +45,22 @@ public class WeeklyChallengeResponseDto {
     }
 
     public static WeeklyChallengeResponseDto of(WeeklyChallenge entity) {
+
         return WeeklyChallengeResponseDto.builder()
                 .id(entity.getId())
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())
                 .goalDate(entity.getGoalDate())
                 .achieved(entity.getAchieved())
+                .remainingDate(calculateBetweenDate(LocalDate.now(), entity.getGoalDate()))
                 .build();
     }
+
+    public static int calculateBetweenDate(LocalDate startDate, LocalDate endDate) {
+        int between = (int) ChronoUnit.DAYS.between(startDate, endDate);
+        if (between <= 0) between = 0;
+
+        return between;
+    }
+
 }

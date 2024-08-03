@@ -22,6 +22,8 @@ import org.springframework.security.config.annotation.web.configurers.HttpBasicC
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -78,7 +80,7 @@ public class WebSecurityConfig {
                                         ))
                                 .redirectionEndpoint(endpoint ->
                                         endpoint.baseUri(
-                                                "/api/v1/oauth2/callback/**"
+                                                "/login/oauth2/code/**"
                                         ))
                                 .userInfoEndpoint(endpoint ->
                                         endpoint.userService(
@@ -98,7 +100,7 @@ public class WebSecurityConfig {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(
                 List.of(
-                        "http://localhost:3000",
+                        "http://localhost:5173",
                         "http://localhost:8080",
                         "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
                         "http://43-201-61-252:8080"

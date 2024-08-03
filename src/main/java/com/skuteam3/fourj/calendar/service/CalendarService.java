@@ -5,14 +5,19 @@ import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.calendar.domain.Calendar;
 import com.skuteam3.fourj.calendar.dto.CalendarRequestDto;
-import com.skuteam3.fourj.calendar.dto.CalendarResponseDto;
 import com.skuteam3.fourj.calendar.repository.CalendarRepository;
 import com.skuteam3.fourj.challenge.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -23,15 +28,9 @@ public class CalendarService {
     private final ChallengeService challengeService;
 
     @Transactional
-    public Calendar createCalendar(CalendarRequestDto calendarRequestDto, String userEmail){
+    public void createCalendar(CalendarRequestDto calendarRequestDto, String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
-
-        Calendar calendar = new Calendar();
-        calendar.setYear(calendarRequestDto.getYear());
-        calendar.setMonth(calendarRequestDto.getMonth());
-        calendar.setDay(calendarRequestDto.getDay());
-        calendar.setUserInfo(userInfo);
 
         try {
 
@@ -42,7 +41,20 @@ public class CalendarService {
         } catch (Exception ignored) {
         }
 
-        return calendarRepository.save(calendar);
+        try{
+            Calendar calendar = new Calendar();
+            calendar.setYear(calendarRequestDto.getYear());
+            calendar.setMonth(calendarRequestDto.getMonth());
+            calendar.setDay(calendarRequestDto.getDay());
+            calendar.setUserInfo(userInfo);
+
+            calendarRepository.save(calendar);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "해당 날짜의 캘린더가 이미 존재합니다.");
+        }
+
+
+
     }
 
     @Transactional
@@ -64,7 +76,7 @@ public class CalendarService {
         calendarRepository.deleteById(id);
     }
 
-    public Optional<Calendar> getCalendarByUserEmail(String userEmail){
+    public List<Calendar> getCalendarByUserEmail(String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("user not found"));
         UserInfo userInfo = user.getUserInfo();
 

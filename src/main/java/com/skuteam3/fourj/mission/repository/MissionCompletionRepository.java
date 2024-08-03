@@ -13,4 +13,5 @@ public interface MissionCompletionRepository extends JpaRepository<MissionComple
     boolean existsByMissionAndUserInfoAndClearedAtBetween(Mission mission, UserInfo userInfo, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
     List<MissionCompletion> findByUserInfoAndClearedAtBetween(UserInfo userInfo, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<MissionCompletion> findByUserInfo(UserInfo userInfo);
 }

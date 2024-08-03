@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "calendars", description = "캘린더 API")
@@ -45,16 +47,15 @@ public class CalendarController {
                     "해당 유저의 유저인포에 저장된 calendar를 모두 조회합니다."
     )
     @GetMapping
-    public ResponseEntity<CalendarResponseDto> getCalendarByUserEmail(Authentication authentication){
+    public ResponseEntity<List<CalendarResponseDto>> getCalendarByUserEmail(Authentication authentication){
         String userEmail = authentication.getName();
 
-        Optional<Calendar> calendarOptional = calendarService.getCalendarByUserEmail(userEmail);
-        if (calendarOptional.isPresent()){
-            CalendarResponseDto dto = CalendarResponseDto.from(calendarOptional.get());
-            return ResponseEntity.ok(dto);
-        } else {
-            return ResponseEntity.notFound().build();
+        List<Calendar> calendarList = calendarService.getCalendarByUserEmail(userEmail);
+        List<CalendarResponseDto> dtos = new ArrayList<>();
+        for (Calendar calendar : calendarList) {
+            dtos.add(CalendarResponseDto.from(calendar));
         }
+        return ResponseEntity.ok(dtos);
     }
 
     //Update
