@@ -1,5 +1,6 @@
 package com.skuteam3.fourj.account.controller;
 
+import com.skuteam3.fourj.account.dto.ExistsFcmClientKeyRequestDto;
 import com.skuteam3.fourj.account.dto.FcmClientKeyRequestDto;
 import com.skuteam3.fourj.account.dto.UpdateDrinkAmountDto;
 import com.skuteam3.fourj.account.dto.UpdateNameDto;
@@ -105,9 +106,9 @@ public class UserInfoController {
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
-                                    schema = @Schema(implementation = FcmClientKeyRequestDto.class)
+                                    schema = @Schema(implementation = ExistsFcmClientKeyRequestDto.class)
                             )))})
-    @PostMapping("/fcm-key")
+    @GetMapping("/fcm-key")
     public ResponseEntity<?> existsFcmClientKey(Authentication authentication) {
 
         String userEmail;
