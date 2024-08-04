@@ -11,6 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "calendar", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"year", "month", "day", "User_id"})
+})
 public class Calendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
