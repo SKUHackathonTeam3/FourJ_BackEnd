@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,8 +103,13 @@ public class ScheduleService {
     //월별 일정 조회
     public List<Schedule> getSchedulesByYearAndMonthAndUserInfo(int year, int month, String userEmail) {
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow().getUserInfo();
-        return calendarRepository.findByYearAndMonthAndUserInfo(year, month, userInfo).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found")).getSchedule();
+        List<Calendar> calendarList = calendarRepository.findByYearAndMonthAndUserInfo(year, month, userInfo);
+        List<Schedule> scheduleList = new ArrayList<>();
+        for (Calendar calendar: calendarList) {
+            scheduleList.add(calendar.getSchedule().get(0));
+        }
+        
+        return scheduleList;
     }
     //해당 날짜 일정 조회
     public List<Schedule> getSchedulesByYearAndMonthAndDayAndUserInfo(int year, int month, int day, String userEmail) {
