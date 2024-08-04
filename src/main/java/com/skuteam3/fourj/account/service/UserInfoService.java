@@ -2,6 +2,7 @@ package com.skuteam3.fourj.account.service;
 
 import com.skuteam3.fourj.abti.repository.AbtiRepository;
 import com.skuteam3.fourj.account.domain.UserInfo;
+import com.skuteam3.fourj.account.dto.ExistsFcmClientKeyRequestDto;
 import com.skuteam3.fourj.account.dto.FcmClientKeyRequestDto;
 import com.skuteam3.fourj.account.dto.UpdateDrinkAmountDto;
 import com.skuteam3.fourj.account.dto.UpdateNameDto;
@@ -64,5 +65,15 @@ public class UserInfoService {
             userInfo.setClientFcmKey(fcmClientKeyRequestDto.getClientFcmKey());
             userInfoRepository.save(userInfo);
         }
+    }
+
+    public ExistsFcmClientKeyRequestDto existsUserInfoFcmKey(String userEmail) {
+
+        UserInfo userInfo = userRepository.findByEmail(userEmail)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                ).getUserInfo();
+
+        return new ExistsFcmClientKeyRequestDto(userInfo.getClientFcmKey() != null);
     }
 }
