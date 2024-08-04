@@ -45,7 +45,7 @@ public class AnalysisService {
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-        if(createdAtWeek.equals(startedAtWeek)){
+        if(createdAtWeek.isAfter(startedAtWeek)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It's analysing. startDate must be in the week after UserInfo's createAt date.");
         }
 
@@ -96,7 +96,7 @@ public class AnalysisService {
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-        if(createdAtWeek.equals(startedAtWeek)){
+        if(createdAtWeek.isAfter(startedAtWeek)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It's analysing. startDate must be in the week after UserInfo's createAt date.");
         }
 
@@ -151,7 +151,7 @@ public class AnalysisService {
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-        if(createdAtWeek.equals(startedAtWeek)){
+        if(createdAtWeek.isAfter(startedAtWeek)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It's analysing. startDate must be in the week after UserInfo's createAt date.");
         }
 
@@ -197,7 +197,7 @@ public class AnalysisService {
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-        if(createdAtWeek.equals(startedAtWeek)){
+        if(createdAtWeek.isAfter(startedAtWeek)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It's analysing. startDate must be in the week after UserInfo's createAt date.");
         }
 
@@ -225,7 +225,7 @@ public class AnalysisService {
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-        if(createdAtWeek.equals(startedAtWeek)){
+        if(createdAtWeek.isAfter(startedAtWeek)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It's analysing. startDate must be in the week after UserInfo's createAt date.");
         }
 
