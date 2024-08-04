@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.WeekFields;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -42,7 +41,6 @@ public class AnalysisService {
         LocalDate createdAt = userInfo.getCreatedAt().toLocalDate();
         LocalDate startedAt = LocalDate.of(year, month, startDate);
         LocalDate endAt= LocalDate.of(year, month, startDate).plusDays(6);
-        int endDate = endAt.getDayOfMonth();
 
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -94,7 +92,6 @@ public class AnalysisService {
         LocalDate createdAt = userInfo.getCreatedAt().toLocalDate();
         LocalDate startedAt = LocalDate.of(year, month, startDate);
         LocalDate endAt= LocalDate.of(year, month, startDate).plusDays(6);
-        int endDate = endAt.getDayOfMonth();
 
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -149,6 +146,7 @@ public class AnalysisService {
         LocalDate createdAt = userInfo.getCreatedAt().toLocalDate();
         LocalDate startedAt = LocalDate.of(year, month, startDate);
         LocalDate endAt= LocalDate.of(year, month, startDate).plusDays(6);
+        int endDate = endAt.getDayOfMonth();
 
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -172,7 +170,7 @@ public class AnalysisService {
             List<Schedule> schedules = calendarDates.getSchedule();
             for (Schedule schedule : schedules) {
 
-                Double dailyAlcoholAmount = scheduleService.calculateScheduleAlcohol(schedule.getId());
+                Double dailyAlcoholAmount = scheduleService.calculateWeeklyAlcohol(year, month, startDate, endDate, userEmail);
 
                 if (schedule.getMemo() != null && userInfo.getAverageAlcoholAmount() < dailyAlcoholAmount) {
                     AnalysisResponseDto dto = new AnalysisResponseDto(calendarDates.getMonth(), calendarDates.getDay(), schedule.getMemo(), dailyAlcoholAmount);
@@ -195,7 +193,6 @@ public class AnalysisService {
         LocalDate createdAt = userInfo.getCreatedAt().toLocalDate();
         LocalDate startedAt = LocalDate.of(year, month, startDate);
         LocalDate endAt= LocalDate.of(year, month, startDate).plusDays(6);
-        int endDate = endAt.getDayOfMonth();
 
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -224,7 +221,6 @@ public class AnalysisService {
         LocalDate createdAt = userInfo.getCreatedAt().toLocalDate();
         LocalDate startedAt = LocalDate.of(year, month, startDate);
         LocalDate endAt= LocalDate.of(year, month, startDate).plusDays(6);
-        int endDate = endAt.getDayOfMonth();
 
         LocalDate createdAtWeek = createdAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate startedAtWeek = startedAt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));

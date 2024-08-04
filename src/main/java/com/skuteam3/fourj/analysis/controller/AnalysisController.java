@@ -5,6 +5,14 @@ import com.skuteam3.fourj.analysis.dto.AnalysisRequestDto;
 import com.skuteam3.fourj.analysis.dto.AnalysisResponseDto;
 import com.skuteam3.fourj.analysis.service.AnalysisService;
 import com.skuteam3.fourj.calendar.service.ScheduleService;
+import com.skuteam3.fourj.mission.dto.MissionResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +36,21 @@ import java.util.Map;
 public class AnalysisController {
 
     private final AnalysisService analysisService;
+
+    @Operation(
+            summary = "주간 통계분석 조회",
+            description = "유저의 주간 음주 통계분석을 조회합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
+                    "해당 유저의 캘린더와 스케줄에 따른 통계분석을 조회합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "통계분석 returned successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = AllAnalysisResponseDto.class)
+                            )))})
     @GetMapping
     public ResponseEntity<?> getAnalysisByUserInfoAndYearMonthAndDayRange(Authentication authentication){
         String userEmail;
