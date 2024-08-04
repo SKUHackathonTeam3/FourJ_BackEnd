@@ -1,13 +1,10 @@
 package com.skuteam3.fourj.badge.controller;
 
-import com.skuteam3.fourj.abti.dto.AbtiResponseDto;
 import com.skuteam3.fourj.badge.dto.AttendanceBadgeDto;
 import com.skuteam3.fourj.badge.dto.MissionBadgeDto;
 import com.skuteam3.fourj.badge.dto.WeeklyChallengeBadgeDto;
 import com.skuteam3.fourj.badge.service.BadgeService;
-import com.skuteam3.fourj.global.message.dto.JsonMessageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
