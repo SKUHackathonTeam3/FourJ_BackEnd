@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class ScheduleResponseDto {
@@ -24,6 +26,8 @@ public class ScheduleResponseDto {
     private Double kaoliangAlcohol;
     @Schema(description = "캘린더 ID", example = "1")
     private Long calendarId;
+    @Schema(description = "약속 날짜", example = "2024-01-01")
+    private LocalDate scheduledDate;
 
     public static ScheduleResponseDto from(Schedule schedule) {
         ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto();
@@ -36,7 +40,9 @@ public class ScheduleResponseDto {
         scheduleResponseDto.setHighballAlcohol(schedule.getHighballAlcohol());
         scheduleResponseDto.setKaoliangAlcohol(schedule.getKaoliangAlcohol());
         scheduleResponseDto.setCalendarId(schedule.getCalendar().getId());
+        scheduleResponseDto.setScheduledDate(LocalDate.of(schedule.getCalendar().getYear(), schedule.getCalendar().getMonth(), schedule.getCalendar().getDay()));
         return scheduleResponseDto;
     }
 
 }
+

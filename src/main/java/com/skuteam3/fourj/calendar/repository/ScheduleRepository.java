@@ -1,14 +1,10 @@
 package com.skuteam3.fourj.calendar.repository;
 
-import com.skuteam3.fourj.account.domain.User;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.calendar.domain.Schedule;
 import com.skuteam3.fourj.calendar.dto.WeeklyAlcoholSummaryDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.Calendar;
-import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
