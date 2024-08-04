@@ -94,21 +94,21 @@ public class UserInfoController {
     }
 
     @Operation(
-            summary = "유저 FCM Client Key 저장",
-            description = "유저의 FCM Client Key 값을 저장합니다. " +
+            summary = "유저 FCM Client Key 설정 여부 조회",
+            description = "유저의 FCM Client Key가 설정되었는지를 조회 합니다. " +
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
-                    "해당 유저의 FCM Client Key 값을 저장합니다. "
+                    "해당 유저의 FCM Client Key 값의 존재 여부를 boolean값으로 반환합니다. "
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200", description = "FCM Client Key 저장 성공",
+                    responseCode = "200", description = "FCM Client Key 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
                                     schema = @Schema(implementation = FcmClientKeyRequestDto.class)
                             )))})
     @PostMapping("/fcm-key")
-    public ResponseEntity<?> saveFcmClientKey(Authentication authentication, @RequestBody FcmClientKeyRequestDto fcmClientKeyRequestDto) {
+    public ResponseEntity<?> existsFcmClientKey(Authentication authentication) {
 
         String userEmail;
         try {
@@ -119,8 +119,7 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        userInfoService.setUserInfoFcmKey(userEmail, fcmClientKeyRequestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(userInfoService.existsUserInfoFcmKey(userEmail));
     }
 
     @Operation(
@@ -129,14 +128,6 @@ public class UserInfoController {
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
                     "해당 유저의 FCM Client Key 값을 수정합니다. "
     )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200", description = "FCM Client Key 수정 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = FcmClientKeyRequestDto.class)
-                            )))})
     @PatchMapping("/fcm-key")
     public ResponseEntity<?> updateFcmClientKey(Authentication authentication, @RequestBody FcmClientKeyRequestDto fcmClientKeyRequestDto) {
 
