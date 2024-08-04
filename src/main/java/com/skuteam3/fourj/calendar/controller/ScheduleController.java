@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -26,17 +27,22 @@ public class ScheduleController {
     //Create
     @Operation(
             summary = "약속 생성",
-            description = "캘린더 ID에 따른 약속을 생성 합니다. " +
-                    "해당 캘린더와 schedule을 연결하여 저장합니다.",
+            description = "해당 날짜의 약속을 생성 합니다. " +
+                    "해당 날짜의 schedule을 저장합니다.",
             parameters = {
-                    @Parameter(name = "calendarId", description = "[path_variable] calendar의 Id", required = true)
+                    @Parameter(name = "year", description = "[path_variable] year", required = true),
+                    @Parameter(name = "month", description = "[path_variable] month", required = true),
+                    @Parameter(name = "day", description = "[path_variable] day", required = true)
             }
     )
-    @PostMapping("/{calendarId}")
-    public String createSchedule(@PathVariable Long calendarId, @RequestBody ScheduleRequestDto scheduleRequestDto){
+    @PostMapping("/{year}/{month}/{day}")
+    public ResponseEntity<?> createSchedule(Authentication authentication, @PathVariable int year, @PathVariable int month, @PathVariable int day, @RequestBody ScheduleRequestDto scheduleRequestDto){
 
-        scheduleService.createSchedule(scheduleRequestDto, calendarId);
-        return "Schedule created successfully";
+        if (authentication == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication is null.");
+
+        Schedule schedule = scheduleService.createSchedule(scheduleRequestDto, year, month, day, authentication.getName());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(ScheduleResponseDto.from(schedule));
     }
 
     //Read
@@ -145,3 +151,4 @@ public class ScheduleController {
 
 
 }
+
