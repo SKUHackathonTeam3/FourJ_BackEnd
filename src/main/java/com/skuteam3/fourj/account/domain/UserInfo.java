@@ -48,6 +48,9 @@ public class UserInfo {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(name = "client-fcm-key")
+    private String clientFcmKey;
+
     @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
     private User user;
 

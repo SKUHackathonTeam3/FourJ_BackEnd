@@ -1,11 +1,16 @@
 package com.skuteam3.fourj.account.controller;
 
+import com.skuteam3.fourj.account.dto.FcmClientKeyRequestDto;
 import com.skuteam3.fourj.account.dto.UpdateDrinkAmountDto;
 import com.skuteam3.fourj.account.dto.UpdateNameDto;
 import com.skuteam3.fourj.account.service.UserInfoService;
 import com.skuteam3.fourj.global.message.dto.JsonMessageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -86,5 +91,65 @@ public class UserInfoController {
         }
 
         return ResponseEntity.ok(new JsonMessageResponseDto("Success to update user drink amount"));
+    }
+
+    @Operation(
+            summary = "유저 FCM Client Key 저장",
+            description = "유저의 FCM Client Key 값을 저장합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
+                    "해당 유저의 FCM Client Key 값을 저장합니다. "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "FCM Client Key 저장 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = FcmClientKeyRequestDto.class)
+                            )))})
+    @PostMapping("/fcm-key")
+    public ResponseEntity<?> saveFcmClientKey(Authentication authentication, @RequestBody FcmClientKeyRequestDto fcmClientKeyRequestDto) {
+
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        userInfoService.setUserInfoFcmKey(userEmail, fcmClientKeyRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "유저 FCM Client Key 수정",
+            description = "유저의 FCM Client Key 값을 수정합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
+                    "해당 유저의 FCM Client Key 값을 수정합니다. "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "FCM Client Key 수정 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = FcmClientKeyRequestDto.class)
+                            )))})
+    @PatchMapping("/fcm-key")
+    public ResponseEntity<?> updateFcmClientKey(Authentication authentication, @RequestBody FcmClientKeyRequestDto fcmClientKeyRequestDto) {
+
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        userInfoService.setUserInfoFcmKey(userEmail, fcmClientKeyRequestDto);
+        return ResponseEntity.ok().build();
     }
 }
