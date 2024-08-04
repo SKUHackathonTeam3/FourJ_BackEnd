@@ -70,6 +70,10 @@ public class AttendanceService {
             if (userInfo.getLastAttendanceDate().isEqual(yesterday)) {
 
                 continuousAttendanceDays = userInfo.getContinuousAttendanceDays() + 1;
+                if (continuousAttendanceDays > userInfo.getMaximumAttendanceDays()) {
+
+                    userInfo.setMaximumAttendanceDays(continuousAttendanceDays);
+                }
             }
         }
 

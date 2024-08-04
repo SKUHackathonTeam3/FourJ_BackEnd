@@ -41,6 +41,9 @@ public class UserInfo {
     @Column(name = "last_attendance_date")
     private LocalDate lastAttendanceDate;
 
+    @Column(name = "maximum_attendance_days")
+    private int maximumAttendanceDays = 0;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
