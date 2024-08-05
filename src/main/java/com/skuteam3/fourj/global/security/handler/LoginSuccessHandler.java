@@ -66,7 +66,7 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
         if (authentication instanceof OAuth2AuthenticationToken) {
 
-            response.sendRedirect("http://localhost:5173/?social-login-success=true");
+            response.sendRedirect("https://smartcheers.site/?social-login-success=true");
         }
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
 
