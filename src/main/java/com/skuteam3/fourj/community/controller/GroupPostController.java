@@ -139,14 +139,11 @@ public class GroupPostController {
             summary = "단체 게시판 흑역사 베스트 게시글 조회",
             description = "단체 게시판에서 흑역사 베스트 게시글을 조회합니다. " +
                     "해당 게시글은 흑역사 키워드 포함, 좋아요 10개 이상의 상위 5개 게시글이 해당됩니다. "+
-                    "유저의 ABTI가 설정되어 있지 않은 경우 에러가 발생합니다.",
-            parameters = {
-                    @Parameter(name = "hashtag", description = "[path_variable] hashtag", required = true)
-            }
+                    "유저의 ABTI가 설정되어 있지 않은 경우 에러가 발생합니다."
     )
     @GetMapping("/best/{hashtag}")
-    public ResponseEntity<List<GroupPostResponseDto>> getBestTop5ByLikes(@PathVariable String hashtag) {
-        List<GroupPost> groupPosts = groupPostService.getBestTop5ByLikes(hashtag);
+    public ResponseEntity<List<GroupPostResponseDto>> getBestTop5ByLikes() {
+        List<GroupPost> groupPosts = groupPostService.getBestTop5ByLikes();
         List<GroupPostResponseDto> groupPostDtos = new ArrayList<>();
         for (GroupPost groupPost : groupPosts) {
             GroupPostResponseDto dto = GroupPostResponseDto.from(groupPost, groupPostService.getLikesByGroupPostId(groupPost.getId()));

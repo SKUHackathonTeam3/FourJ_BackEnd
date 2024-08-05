@@ -90,7 +90,7 @@ public class GroupPostService {
 
     // 오늘의 흑역사 베스트 게시글 조회
     // #흑역사 해시태그 포함, 좋아요 10개 이상의 상위 5개 게시글
-    public List<GroupPost> getBestTop5ByLikes(String hashtag){
+    public List<GroupPost> getBestTop5ByLikes(){
         return groupPostRepository.findTop5GroupPostsWithLikesGreaterThanNine();
     }
 
