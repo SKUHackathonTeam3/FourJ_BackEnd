@@ -106,7 +106,9 @@ public class WebSecurityConfig {
                         "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
                         "https://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
                         "http://43-201-61-252:8080",
-                        "https://fourj.p-e.kr"
+                        "https://fourj.p-e.kr",
+                        "https://api.smartcheers.site",
+                        "https://smartcheers.site"
                 )
         );
         corsConfiguration.setAllowedHeaders(
