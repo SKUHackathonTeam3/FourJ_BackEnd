@@ -59,7 +59,6 @@ public class AbtiResponseDto {
                 ", improvingDescription1='" + improvingDescription1 + '\'' +
                 ", improvingDescription2='" + improvingDescription2 + '\'' +
                 ", improvingDescription3='" + improvingDescription3 + '\'' +
-                ", image='" + image + '\'' +
                 '}';
     }
 }
