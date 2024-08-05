@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
+                .securityMatcher("/**")
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
@@ -115,7 +116,7 @@ public class WebSecurityConfig {
                 List.of("*")
         );
         corsConfiguration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTION")
+                List.of("GET", "POST", "PUT", "DELETE", "PATCH")
         );
         corsConfiguration.setExposedHeaders(
                 List.of("*")
