@@ -23,6 +23,7 @@ public class AbtiResponseDto {
     @Schema(description="음주 습관 개선 3", example="간헐적인 술 없는 날을 정해 건강을 지키세요.")
     private String improvingDescription3;
     @Schema(description="이미지 경로", example="http://이미지경로")
+    private String image;
 
     public static Abti toEntity(AbtiResponseDto abtiResponseDto) {
         return Abti.builder()
