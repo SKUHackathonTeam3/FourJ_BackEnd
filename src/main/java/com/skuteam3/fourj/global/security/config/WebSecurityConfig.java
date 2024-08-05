@@ -103,8 +103,7 @@ public class WebSecurityConfig {
                         "http://localhost:5173",
                         "http://localhost:8080",
                         "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
-                        "https://api.smartcheers.site",
-                        "https://smartcheers.site"
+                        "https://api.smartcheers.site"
                 )
         );
         corsConfiguration.setAllowedHeaders(
