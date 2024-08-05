@@ -73,24 +73,6 @@ jobs:
         echo '${{ secrets.FIREBASE_KEY_JSON }}' | jq '.' > ./fourj_firebase_service_key.json
       shell: bash
 
-      # 환경별 key 파일 생성(1) - dev
-    - name: make firebase_key_json
-      if: github.ref == 'refs/heads/develop'
-      run: |
-        cd ./src/main/resources
-        touch ./keystore.p12
-        echo '${{ secrets.KEY_FILE }}' | base64 --decode > keystore.p12
-      shell: bash
-
-    # 환경별 key 파일 생성(2) - prod
-    - name: make firebase_key_json
-      if: contains(github.ref, 'main')
-      run: |
-        cd ./src/main/resources
-        touch ./keystore.p12
-        echo '${{ secrets.KEY_FILE }}' | base64 --decode > keystore.p12
-      shell: bash
-
     # gradle chmod
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
