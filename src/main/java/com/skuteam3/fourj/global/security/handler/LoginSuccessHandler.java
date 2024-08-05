@@ -45,20 +45,17 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         String accessToken = jwtProvider.createToken(authentication.getName(), TokenType.ACCESS_TOKEN);
         String refreshToken = jwtProvider.createToken(authentication.getName(), TokenType.REFRESH_TOKEN);
 
-        ResponseCookie responseCookie = ResponseCookie
-                .from("refresh_token", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .maxAge(24 * 60 * 60)
-                .path("/")
-                .build();
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(24*60*60);
 
+        
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.addHeader("Set-Cookie", responseCookie.toString());
+        response.addCookie(cookie);
 
         if (authentication instanceof OAuth2AuthenticationToken) {
-        
+
             response.sendRedirect("https://jujeokjujeok.netlify.app/?socialLogin=true");
         }
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
