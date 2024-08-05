@@ -47,7 +47,7 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         String refreshToken = jwtProvider.createToken(authentication.getName(), TokenType.REFRESH_TOKEN);
 
 
-        ResponseCookie cookie = ResponseCookie
+        ResponseCookie responseCookie = ResponseCookie
                 .from("refresh_token", refreshToken)
                 .path("/")
                 .httpOnly(true)
@@ -55,14 +55,18 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
                 .maxAge(24*60*60)
                 .sameSite("None")
                 .build();
-
-
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(24*60*60);
+        response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Set-Cookie", cookie.toString());
+//        response.setHeader("Set-Cookie", responseCookie.toString());
 
         if (authentication instanceof OAuth2AuthenticationToken) {
 
-            response.sendRedirect("https://smartcheers.site/?socialLogin=true");
+            response.sendRedirect("http://localhost:5173/?social-login-success=true");
         }
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
 
