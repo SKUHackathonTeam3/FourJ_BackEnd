@@ -1,5 +1,7 @@
 package com.skuteam3.fourj.challenge.controller;
 
+import com.skuteam3.fourj.challenge.dto.ReduceChallengeRequestDto;
+import com.skuteam3.fourj.challenge.dto.ReduceChallengeResponseDto;
 import com.skuteam3.fourj.challenge.dto.WeeklyChallengeResponseDto;
 import com.skuteam3.fourj.challenge.service.ChallengeService;
 import com.skuteam3.fourj.global.message.dto.JsonMessageResponseDto;
@@ -29,6 +31,8 @@ public class ChallengeController {
 
     private final ChallengeService challengeService;
 
+
+    // 금주 챌린지
     @Operation(
             summary = "현재 진행중인 금주 챌린지 조회",
             description = "로그인한 유저의 현재 진행중인 금주 챌린지를 조회할 수 있습니다. " +
@@ -49,7 +53,7 @@ public class ChallengeController {
     @GetMapping("/weekly")
     public ResponseEntity<?> getWeeklyChallengeInfo(Authentication authentication) {
 
-        WeeklyChallengeResponseDto dto = null;
+        WeeklyChallengeResponseDto dto;
         String userEmail;
 
         try {
@@ -110,12 +114,50 @@ public class ChallengeController {
         return ResponseEntity.ok().build();
     }
 
+    // 절주 챌린지
     @Operation(
-            summary = "현재 진행중인 금주 챌린지 종료",
-            description = "로그인한 유저의 현재 진행중인 금주 챌린지를 종료할 수 있습니다. " +
+            summary = "현재 로그인한 유저의 절주 챌린지 생성",
+            description = "로그인한 유저에 절주 챌린지를 생성합니다. " +
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
-                    "해당 유저의 현재 진행 중인 금주 챌린지를 조회합니다.(종료 되지 않은 금주 챌린지) " +
-                    "API를 사용하는 날짜가 금주 챌린지의 목표날짜 이상인 경우 금주 챌린지를 성공으로 기록합니다. "
+                    "해당 유저와 절주 챌린지를 연결하여 생성합니다. " +
+                    "절주 챌린지는 생성한 날짜를 기준으로 +14일을 목표 날짜로 생성합니다."
+    )
+    @PostMapping("/reduce")
+    public ResponseEntity<?> createReduceChallenge(Authentication authentication, ReduceChallengeRequestDto reduceChallengeRequestDto) {
+
+        ReduceChallengeResponseDto dto = null;
+        String userEmail;
+
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+
+            dto = challengeService.createReduceChallenge(userEmail, reduceChallengeRequestDto);
+        } catch (ResponseStatusException rse) {
+
+            return ResponseEntity.status(rse.getStatusCode()).body(new JsonMessageResponseDto("Failed to create reduce challenge: " + rse.getMessage()));
+        } catch (Exception e) {
+
+            log.error("ChallengeController_createReduceChallenge" + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JsonMessageResponseDto("Failed to create reduce challenge"));
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
+            summary = "현재 진행중인 금주, 절주 챌린지 종료",
+            description = "로그인한 유저의 현재 진행중인 금주, 절주 챌린지를 종료할 수 있습니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며 " +
+                    "해당 유저의 현재 진행 중인 금주, 절주 챌린지를 조회합니다.(종료 되지 않은 금주 챌린지) " +
+                    "API를 사용하는 날짜가 금주, 절주 챌린지의 목표날짜 이상인 경우 금주, 절주 챌린지를 성공으로 기록합니다. "
     )
     @PostMapping("/weekly/achieved")
     public ResponseEntity<?> updateWeeklyChallengeAchieved(Authentication authentication) {

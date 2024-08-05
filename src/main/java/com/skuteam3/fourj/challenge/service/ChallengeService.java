@@ -3,6 +3,8 @@ package com.skuteam3.fourj.challenge.service;
 import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.challenge.domain.WeeklyChallenge;
+import com.skuteam3.fourj.challenge.dto.ReduceChallengeRequestDto;
+import com.skuteam3.fourj.challenge.dto.ReduceChallengeResponseDto;
 import com.skuteam3.fourj.challenge.dto.WeeklyChallengeResponseDto;
 import com.skuteam3.fourj.challenge.repository.WeeklyChallengeRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +38,7 @@ public class ChallengeService {
         WeeklyChallenge weeklyChallenge = WeeklyChallenge.builder()
                 .startDate(now)
                 .goalDate(now.plusWeeks(2))
+                .isReduce(false)
                 .build();
         weeklyChallenge.setUserInfo(userInfo);
 
@@ -53,7 +56,10 @@ public class ChallengeService {
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not have an ongoing weekly challenge")
         );
 
+        if (weeklyChallenge.getIsReduce())
+            return ReduceChallengeResponseDto.of(weeklyChallenge);
         return WeeklyChallengeResponseDto.of(weeklyChallenge);
+
     }
 
     public void updateWeeklyChallengeEndDate(String userEmail, LocalDate endDate) {
@@ -99,12 +105,36 @@ public class ChallengeService {
         return achieved;
     }
 
-    public boolean findSuccessfulWeeklyChallenge(String userEmail) {
+    public boolean findSuccessfulWeeklyChallenge(String userEmail, boolean isReduce) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         ).getUserInfo();
 
         return weeklyChallengeRepository.existsByAchievedIsTrueAndUserInfo(userInfo);
+    }
+
+    public ReduceChallengeResponseDto createReduceChallenge(String userEmail, ReduceChallengeRequestDto dto) {
+
+        UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        ).getUserInfo();
+        LocalDate now = LocalDate.now();
+
+
+        if (weeklyChallengeRepository.findByAchievedIsNullAndUserInfo(userInfo).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already has an ongoing weekly challenge");
+        }
+
+        WeeklyChallenge weeklyChallenge = WeeklyChallenge.builder()
+                .startDate(now)
+                .goalDate(now.plusWeeks(2))
+                .isReduce(true)
+                .firstWeekDrinkGoal(dto.getFirstWeekDrinkGoal())
+                .secondWeekDrinkGoal(dto.getSecondWeekDrinkGoal())
+                .build();
+        weeklyChallenge.setUserInfo(userInfo);
+
+        return ReduceChallengeResponseDto.of(weeklyChallengeRepository.save(weeklyChallenge));
     }
 }

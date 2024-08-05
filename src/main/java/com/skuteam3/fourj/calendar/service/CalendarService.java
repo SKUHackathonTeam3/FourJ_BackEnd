@@ -6,6 +6,7 @@ import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.calendar.domain.Calendar;
 import com.skuteam3.fourj.calendar.dto.CalendarRequestDto;
 import com.skuteam3.fourj.calendar.repository.CalendarRepository;
+import com.skuteam3.fourj.challenge.dto.WeeklyChallengeResponseDto;
 import com.skuteam3.fourj.challenge.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,7 +34,12 @@ public class CalendarService {
 
         try {
 
-            if (challengeService.getOngoingWeeklyChallenge(userEmail) != null) {
+            WeeklyChallengeResponseDto dto = challengeService.getOngoingWeeklyChallenge(userEmail);
+            if (dto != null) {
+                if (dto.isReduce()) {
+                    LocalDate endDate = LocalDate.of(calendarRequestDto.getYear(), calendarRequestDto.getMonth(), calendarRequestDto.getDay());
+
+                }
                 LocalDate endDate = LocalDate.of(calendarRequestDto.getYear(), calendarRequestDto.getMonth(), calendarRequestDto.getDay());
                 challengeService.updateWeeklyChallengeEndDate(userEmail, endDate);
             }

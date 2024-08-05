@@ -19,7 +19,6 @@ public class WeeklyChallenge {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
@@ -29,6 +28,15 @@ public class WeeklyChallenge {
     @Column(name = "goal_date", nullable = false)
     private LocalDate goalDate;
 
+    @Column(name = "first_week_drink_goal")
+    private Double firstWeekDrinkGoal;
+
+    @Column(name = "second_week_drink_goal")
+    private Double secondWeekDrinkGoal;
+
+    @Column(name = "is_reduce")
+    private Boolean isReduce = false;
+
     @Column(name = "achieved")
     private Boolean achieved;
 
@@ -37,10 +45,21 @@ public class WeeklyChallenge {
     private UserInfo userInfo;
 
     @Builder
-    public WeeklyChallenge(LocalDate startDate, LocalDate endDate, LocalDate goalDate, Boolean achieved) {
+    public WeeklyChallenge(
+            LocalDate startDate,
+            LocalDate endDate,
+            LocalDate goalDate,
+            Double firstWeekDrinkGoal,
+            Double secondWeekDrinkGoal,
+            Boolean isReduce,
+            Boolean achieved) {
+
         this.startDate = startDate;
         this.endDate = endDate;
         this.goalDate = goalDate;
+        this.firstWeekDrinkGoal = firstWeekDrinkGoal;
+        this.secondWeekDrinkGoal = secondWeekDrinkGoal;
+        this.isReduce = isReduce;
         this.achieved = achieved;
     }
 

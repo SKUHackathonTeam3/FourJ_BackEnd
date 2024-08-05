@@ -6,12 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 @Data
 public class WeeklyChallengeResponseDto {
-    @Schema(description="금주 챌린지 Id", example="1")
+    @Schema(description="챌린지 Id", example="1")
     private Long id;
     @Schema(description="시작일", example="2024-01-01")
     private LocalDate startDate;
@@ -23,15 +22,18 @@ public class WeeklyChallengeResponseDto {
     private Boolean achieved;
     @Schema(description="남은 일수", example="14")
     private int remainingDate;
+    @Schema(description="금주(false)/절주(true)", example="false")
+    private boolean isReduce;
 
     @Builder
-    public WeeklyChallengeResponseDto(Long id, LocalDate startDate, LocalDate endDate, LocalDate goalDate, Boolean achieved, int remainingDate) {
+    public WeeklyChallengeResponseDto(Long id, LocalDate startDate, LocalDate endDate, LocalDate goalDate, Boolean achieved, int remainingDate, boolean isReduce) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.goalDate = goalDate;
         this.achieved = achieved;
         this.remainingDate = remainingDate;
+        this.isReduce = isReduce;
     }
 
     public static WeeklyChallenge toEntity(WeeklyChallengeResponseDto dto) {
@@ -41,6 +43,7 @@ public class WeeklyChallengeResponseDto {
                 .endDate(dto.getEndDate())
                 .goalDate(dto.getGoalDate())
                 .achieved(dto.getAchieved())
+                .isReduce(dto.isReduce())
                 .build();
     }
 
@@ -53,6 +56,7 @@ public class WeeklyChallengeResponseDto {
                 .goalDate(entity.getGoalDate())
                 .achieved(entity.getAchieved())
                 .remainingDate(calculateBetweenDate(LocalDate.now(), entity.getGoalDate()))
+                .isReduce(entity.getIsReduce())
                 .build();
     }
 

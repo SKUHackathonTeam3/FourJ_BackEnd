@@ -43,7 +43,7 @@ public class BadgeService {
         UserInfo userInfo = userRepository.findByEmail(userEmail).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found.")).getUserInfo();
 
-        return new WeeklyChallengeBadgeDto(challengeService.findSuccessfulWeeklyChallenge(userEmail));
+        return new WeeklyChallengeBadgeDto(challengeService.findSuccessfulWeeklyChallenge(userEmail, false));
     }
 
 }

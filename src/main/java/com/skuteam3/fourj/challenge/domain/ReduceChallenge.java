@@ -18,8 +18,11 @@ public class ReduceChallenge {
     @Column(name = "week_start", nullable = false, unique = true)
     private LocalDate weekStart;
 
-    @Column(name = "drink_goal", nullable = false)
-    private Double drinkGoal;
+    @Column(name = "first_week_drink_goal", nullable = false)
+    private Double firstWeekDrinkGoal;
+
+    @Column(name = "second_week_drink_goal", nullable = false)
+    private Double secondWeekDrinkGoal;
 
     @Column(name = "achieved")
     private boolean achieved;

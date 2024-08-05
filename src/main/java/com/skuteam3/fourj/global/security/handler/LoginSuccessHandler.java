@@ -59,6 +59,8 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         response.getWriter().write(objectMapper.writeValueAsString(responseBody));
         response.getWriter().flush();
 
+        response.sendRedirect("http:/localhost:3000/");
+
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }
 }
