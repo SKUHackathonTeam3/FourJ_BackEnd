@@ -6,12 +6,15 @@ import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.jwt.TokenType;
 import com.skuteam3.fourj.jwt.provider.JwtProvider;
+import com.skuteam3.fourj.oauth2.domain.SocialUser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -46,12 +49,30 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
-        cookie.setAttribute("SameSite", "None");
 
-        response.addCookie(cookie);
+
         response.setHeader("Authorization", "Bearer " + accessToken);
 
-        response.sendRedirect("https://jujeokjujeok.netlify.app/?socialLogin=true");
+        if (authentication instanceof OAuth2AuthenticationToken) {
+            cookie.setAttribute("SameSite", "None");
+
+            response.addCookie(cookie);
+            response.setHeader("Authorization", "Bearer " + accessToken);
+
+            response.sendRedirect("https://jujeokjujeok.netlify.app/?socialLogin=true");
+        }
+        if (authentication instanceof UsernamePasswordAuthenticationToken) {
+            response.addCookie(cookie);
+
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("accessToken", accessToken);
+            responseBody.put("message", userInfo.getAbti() == null ? "Need ABTI" : "Login successful");
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json");
+            response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+            response.getWriter().flush();
+        }
 
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }
