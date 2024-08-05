@@ -59,12 +59,10 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Set-Cookie", cookie.toString());
-        response.setHeader("Access-Control-Allow-Origin", "https://jujeokjujeok.netlify.app");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         if (authentication instanceof OAuth2AuthenticationToken) {
 
-            response.sendRedirect("https://jujeokjujeok.netlify.app/?socialLogin=true");
+            response.sendRedirect("https://smartcheers.site/?socialLogin=true");
         }
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
 
