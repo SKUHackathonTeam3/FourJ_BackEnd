@@ -115,7 +115,7 @@ public class WebSecurityConfig {
                 List.of("*")
         );
         corsConfiguration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "PATCH")
+                List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTION")
         );
         corsConfiguration.setExposedHeaders(
                 List.of("*")
