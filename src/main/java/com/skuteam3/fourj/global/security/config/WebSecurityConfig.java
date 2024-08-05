@@ -50,7 +50,7 @@ public class WebSecurityConfig {
     protected SecurityFilterChain securityFilterChain(
             HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(CsrfConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
@@ -92,6 +92,35 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter(), JsonUsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
+    }
+
+    @Bean
+    protected CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedOrigins(
+                List.of(
+                        "http://localhost:5173",
+                        "http://localhost:8080",
+                        "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
+                        "https://api.smartcheers.site",
+                        "https://smartcheers.site"
+                )
+        );
+        corsConfiguration.setAllowedHeaders(
+                List.of("*")
+        );
+        corsConfiguration.setAllowedMethods(
+                List.of("GET", "POST", "PUT", "DELETE", "PATCH")
+        );
+        corsConfiguration.setExposedHeaders(
+                List.of("*")
+        );
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
     }
 
     @Bean
