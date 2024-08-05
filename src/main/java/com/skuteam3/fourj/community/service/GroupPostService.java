@@ -80,7 +80,7 @@ public class GroupPostService {
 
     // 해시태그로 게시글 조회
     public List<GroupPost> getGroupPostByHashtag(String hashtag){
-        return groupPostRepository.findGroupPostByHashtag(hashtag);
+        return groupPostRepository.findGroupPostByHashtagContaining(hashtag);
     }
 
     // 키워드로 제목,본문 게시글 조회
