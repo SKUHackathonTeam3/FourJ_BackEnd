@@ -49,7 +49,6 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setAttribute("SameSite", "None");
-        cookie.setDomain("fourj.p-e.kr");
         cookie.setPath("/");
         cookie.setMaxAge(24*60*60);
 
