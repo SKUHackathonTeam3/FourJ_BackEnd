@@ -46,18 +46,12 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
+        cookie.setAttribute("SameSite", "None");
 
         response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
 
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("accessToken", accessToken);
-        responseBody.put("message", userInfo.getAbti() == null ? "Need ABTI" : "Login successful");
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
-        response.getWriter().flush();
+        response.sendRedirect("https://jujeokjujeok.netlify.app/?socialLogin=true");
 
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }
