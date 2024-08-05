@@ -22,6 +22,7 @@ public class AbtiResponseDto {
     private String improvingDescription2;
     @Schema(description="음주 습관 개선 3", example="간헐적인 술 없는 날을 정해 건강을 지키세요.")
     private String improvingDescription3;
+    @Schema(description="이미지 경로", example="http://이미지경로")
 
     public static Abti toEntity(AbtiResponseDto abtiResponseDto) {
         return Abti.builder()
@@ -31,6 +32,7 @@ public class AbtiResponseDto {
                 .improvingDescription1(abtiResponseDto.getImprovingDescription1())
                 .improvingDescription2(abtiResponseDto.getImprovingDescription2())
                 .improvingDescription3(abtiResponseDto.getImprovingDescription3())
+                .image(abtiResponseDto.getImage())
                 .build();
     }
 
@@ -43,6 +45,7 @@ public class AbtiResponseDto {
                 .improvingDescription1(abti.getImprovingDescription1())
                 .improvingDescription2(abti.getImprovingDescription2())
                 .improvingDescription3(abti.getImprovingDescription3())
+                .image(abti.getImage())
                 .build();
     }
 
@@ -56,6 +59,7 @@ public class AbtiResponseDto {
                 ", improvingDescription1='" + improvingDescription1 + '\'' +
                 ", improvingDescription2='" + improvingDescription2 + '\'' +
                 ", improvingDescription3='" + improvingDescription3 + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }
