@@ -12,6 +12,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,16 +46,19 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         String accessToken = jwtProvider.createToken(authentication.getName(), TokenType.ACCESS_TOKEN);
         String refreshToken = jwtProvider.createToken(authentication.getName(), TokenType.REFRESH_TOKEN);
 
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setAttribute("SameSite", "None");
-        cookie.setPath("/");
-        cookie.setMaxAge(24*60*60);
+
+        ResponseCookie cookie = ResponseCookie
+                .from("refresh_token", refreshToken)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(24*60*60)
+                .sameSite("None")
+                .build();
 
 
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.addCookie(cookie);
+        response.setHeader("Set-Cookie", cookie.toString());
 
         if (authentication instanceof OAuth2AuthenticationToken) {
 
