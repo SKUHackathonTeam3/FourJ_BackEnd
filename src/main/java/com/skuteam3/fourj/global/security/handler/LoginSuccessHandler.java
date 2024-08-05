@@ -60,9 +60,9 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(24*60*60);
-        response.addCookie(cookie);
+        //response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
-//        response.setHeader("Set-Cookie", responseCookie.toString());
+        response.setHeader("Set-Cookie", responseCookie.toString() + "SameSite=None;");
 
         if (authentication instanceof OAuth2AuthenticationToken) {
 
