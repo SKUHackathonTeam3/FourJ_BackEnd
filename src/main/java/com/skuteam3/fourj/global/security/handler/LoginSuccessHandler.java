@@ -47,10 +47,13 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setAttribute("SameSite", "None");
+        cookie.setDomain("fourj.p-e.kr");
         cookie.setPath("/");
         cookie.setMaxAge(24*60*60);
 
-        
+
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.addCookie(cookie);
 
