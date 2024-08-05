@@ -12,6 +12,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -44,25 +45,23 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         String accessToken = jwtProvider.createToken(authentication.getName(), TokenType.ACCESS_TOKEN);
         String refreshToken = jwtProvider.createToken(authentication.getName(), TokenType.REFRESH_TOKEN);
 
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-
+        ResponseCookie responseCookie = ResponseCookie
+                .from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .maxAge(24 * 60 * 60)
+                .path("/")
+                .build();
 
         response.setHeader("Authorization", "Bearer " + accessToken);
+        response.addHeader("Set-Cookie", responseCookie.toString());
 
         if (authentication instanceof OAuth2AuthenticationToken) {
-            cookie.setAttribute("SameSite", "None");
-
-            response.addCookie(cookie);
-            response.setHeader("Authorization", "Bearer " + accessToken);
-
+        
             response.sendRedirect("https://jujeokjujeok.netlify.app/?socialLogin=true");
         }
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
-            response.addCookie(cookie);
 
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("accessToken", accessToken);
