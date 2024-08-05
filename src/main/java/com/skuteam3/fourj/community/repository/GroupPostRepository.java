@@ -15,10 +15,9 @@ public interface GroupPostRepository extends JpaRepository<GroupPost, Long> {
 
     @Query("SELECT gp FROM GroupPost gp " +
             "LEFT JOIN gp.likes l " +
-            "WHERE gp.hashtag LIKE %:hashtag% " +
             "GROUP BY gp.id " +
             "HAVING COUNT(l.id) > 9 " +
             "ORDER BY COUNT(l.id) DESC")
-    List<GroupPost> findTop5GroupPostsWithLikesGreaterThanNine( String hashtag);
+    List<GroupPost> findTop5GroupPostsWithLikesGreaterThanNine();
 
 }
