@@ -57,13 +57,13 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
                 .build();
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setSecure(true);
+        cookie.setDomain("smartcheers.site");
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(24*60*60);
         //response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Set-Cookie", responseCookie.toString() + "; ." +
-                "SameSite=None;");
+        response.setHeader("Set-Cookie", responseCookie.toString() + "; SameSite=None;");
 
         if (authentication instanceof OAuth2AuthenticationToken) {
 
