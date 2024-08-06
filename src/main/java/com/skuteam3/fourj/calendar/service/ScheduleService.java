@@ -56,6 +56,7 @@ public class ScheduleService {
         if (contactOptional.isPresent() && userInfo.getClientFcmKey() != null) {
             try {
                 fcmService.sendWebPushNotification(userInfo.getClientFcmKey(), "약속이 생성되었습니다!", scheduleRequestDto.getMemo());
+                System.out.println("알림 전송 성공");
             } catch (Exception ignored) {
             }
             try {
