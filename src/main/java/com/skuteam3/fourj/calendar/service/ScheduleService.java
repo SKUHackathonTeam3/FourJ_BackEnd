@@ -54,7 +54,10 @@ public class ScheduleService {
 
         Optional<Contact> contactOptional = contactRepository.findContactByUserInfoAndIsMain(userInfo, true);
         if (contactOptional.isPresent() && userInfo.getClientFcmKey() != null) {
-
+            try {
+                fcmService.sendWebPushNotification(userInfo.getClientFcmKey(), "약속이 생성되었습니다!", scheduleRequestDto.getMemo());
+            } catch (Exception ignored) {
+            }
             try {
                 fcmService.schedulePush(
                         LocalDateTime.of(year, month, day, 0, 0, 0, 0).plusDays(1),
