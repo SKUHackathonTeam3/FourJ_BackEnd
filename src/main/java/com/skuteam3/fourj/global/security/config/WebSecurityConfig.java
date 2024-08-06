@@ -60,17 +60,17 @@ public class WebSecurityConfig {
                         ))
                 .authorizeHttpRequests(request ->
                         request
-                            /*
-                                .requestMatchers(
-                                "/",
-                                "/api/v1/*"
-                                )
-                                .permitAll()
-                                .requestMatchers("/api/v1/user/*")
-                                .hasRole("USER")
-                                .requestMatchers("/api/v1/admin/*")
-                                .hasRole("ADMIN")
-                            */
+                                /*
+                                    .requestMatchers(
+                                    "/",
+                                    "/api/v1/*"
+                                    )
+                                    .permitAll()
+                                    .requestMatchers("/api/v1/user/*")
+                                    .hasRole("USER")
+                                    .requestMatchers("/api/v1/admin/*")
+                                    .hasRole("ADMIN")
+                                */
                                 .anyRequest()
                                 .permitAll()
                 ).oauth2Login(oauth2 ->
@@ -100,12 +100,11 @@ public class WebSecurityConfig {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(
                 List.of(
-                        "https://jujeokjujeok.netlify.app",
                         "http://localhost:5173",
                         "http://localhost:8080",
                         "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
-                        "https://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080/",
-                        "http://43-201-61-252:8080"
+                        "https://api.smartcheers.site",
+                        "https://smartcheers.site"
                 )
         );
         corsConfiguration.setAllowedHeaders(

@@ -6,12 +6,17 @@ import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.jwt.TokenType;
 import com.skuteam3.fourj.jwt.provider.JwtProvider;
+import com.skuteam3.fourj.oauth2.domain.SocialUser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -41,25 +46,41 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         String accessToken = jwtProvider.createToken(authentication.getName(), TokenType.ACCESS_TOKEN);
         String refreshToken = jwtProvider.createToken(authentication.getName(), TokenType.REFRESH_TOKEN);
 
+
+        ResponseCookie responseCookie = ResponseCookie
+                .from("refresh_token", refreshToken)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .domain("smartcheers.site")
+                .maxAge(24*60*60)
+                .sameSite("None")
+                .build();
         Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setDomain("smartcheers.site");
         cookie.setPath("/");
-
-        response.addCookie(cookie);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(24*60*60);
+        //response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("Set-Cookie", responseCookie.toString());
 
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("accessToken", accessToken);
-        responseBody.put("message", userInfo.getAbti() == null ? "Need ABTI" : "Login successful");
+        if (authentication instanceof OAuth2AuthenticationToken) {
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
-        response.getWriter().flush();
+            response.sendRedirect("https://smartcheers.site/?social-login-success=true");
+        }
+        if (authentication instanceof UsernamePasswordAuthenticationToken) {
 
-        response.sendRedirect("http:/localhost:5173/");
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("accessToken", accessToken);
+            responseBody.put("NeedAbti", userInfo.getAbti() == null);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json");
+            response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+            response.getWriter().flush();
+        }
 
         System.out.println("refresh token: " + refreshToken + "\naccess token: " + accessToken);
     }

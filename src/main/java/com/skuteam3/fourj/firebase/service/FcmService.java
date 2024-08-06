@@ -33,6 +33,7 @@ public class FcmService {
         try {
 
             FirebaseMessaging.getInstance(firebaseApp).send(message);
+            log.info("Push notification sent successfully to token: {}", token);
         } catch (Exception e) {
 
             log.error("FcmService_sendWebPushNotification: " + e.getMessage(), e);
@@ -44,11 +45,26 @@ public class FcmService {
     //                                                   알림을 보내는 것
     public void schedulePush(LocalDateTime taskTime, int plusHour, String token, String title, String body) {
 
+        LocalDateTime now = LocalDateTime.now();
         LocalDateTime executionTime = taskTime.plusHours(plusHour);
+
+        if (executionTime.isBefore(now)) {
+            String errorMessage = "Scheduled time " + executionTime + " is in the past compared to current time " + now;
+            log.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
+        }
+
         Date executeDate = java.sql.Timestamp.valueOf(executionTime);
 
+
         taskScheduler.schedule(() -> {
-            sendWebPushNotification(token, title, body);
+            try {
+
+                sendWebPushNotification(token, title, body);
+            } catch (Exception e) {
+
+                log.error("Scheduled push notification failed: {}", e.getMessage(), e);
+            }
         }, executeDate);
     }
 

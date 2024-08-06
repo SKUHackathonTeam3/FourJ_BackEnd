@@ -1,9 +1,6 @@
 package com.skuteam3.fourj.account.controller;
 
-import com.skuteam3.fourj.account.dto.ExistsFcmClientKeyRequestDto;
-import com.skuteam3.fourj.account.dto.FcmClientKeyRequestDto;
-import com.skuteam3.fourj.account.dto.UpdateDrinkAmountDto;
-import com.skuteam3.fourj.account.dto.UpdateNameDto;
+import com.skuteam3.fourj.account.dto.*;
 import com.skuteam3.fourj.account.service.UserInfoService;
 import com.skuteam3.fourj.global.message.dto.JsonMessageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +25,64 @@ public class UserInfoController {
 
     private final UserInfoService userInfoService;
 
+    @Operation(
+            summary = "유저 닉네임 조회",
+            description = "유저의 닉네임을 조회 합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
+                    "해당 유저의 닉네임을 반환합니다. "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "FCM Client Key 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserNameDto.class)
+                            )))})
+    @GetMapping("/user-name")
+    public ResponseEntity<?> getUserInfoName(Authentication authentication) {
+
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok().body(userInfoService.getUserInfoName(userEmail));
+    }
+
+    @Operation(
+            summary = "유저 닉네임 조회",
+            description = "유저의 닉네임을 조회 합니다. " +
+                    "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
+                    "해당 유저의 닉네임을 반환합니다. "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "FCM Client Key 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserAbtiDto.class)
+                            )))})
+    @GetMapping("/user-abti")
+    public ResponseEntity<?> getUserInfoAbti(Authentication authentication) {
+
+        String userEmail;
+        try {
+
+            userEmail = authentication.getName();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok().body(userInfoService.getUserInfoAbti(userEmail));
+    }
+
     // 유저 닉네임 수정
     @Operation(
             summary = "유저 닉네임 수정",
@@ -36,7 +91,7 @@ public class UserInfoController {
                     "해당 유저의 닉네임을 Example 형식의 Json 데이터로 수정합니다. "
     )
     @PatchMapping("/user-name")
-    public ResponseEntity<?> updateUserInfoName(Authentication authentication, @RequestBody UpdateNameDto updateNameDto) {
+    public ResponseEntity<?> updateUserInfoName(Authentication authentication, @RequestBody UserNameDto userNameDto) {
 
         String userEmail;
         try {
@@ -49,7 +104,7 @@ public class UserInfoController {
 
         try {
 
-            userInfoService.updateUserInfoName(userEmail, updateNameDto);
+            userInfoService.updateUserInfoName(userEmail, userNameDto);
         } catch (ResponseStatusException rse) {
 
             return ResponseEntity.status(rse.getStatusCode()).body(new JsonMessageResponseDto("Failed to update user name: " + rse.getMessage()));

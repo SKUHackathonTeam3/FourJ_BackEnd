@@ -2,10 +2,7 @@ package com.skuteam3.fourj.account.service;
 
 import com.skuteam3.fourj.abti.repository.AbtiRepository;
 import com.skuteam3.fourj.account.domain.UserInfo;
-import com.skuteam3.fourj.account.dto.ExistsFcmClientKeyRequestDto;
-import com.skuteam3.fourj.account.dto.FcmClientKeyRequestDto;
-import com.skuteam3.fourj.account.dto.UpdateDrinkAmountDto;
-import com.skuteam3.fourj.account.dto.UpdateNameDto;
+import com.skuteam3.fourj.account.dto.*;
 import com.skuteam3.fourj.account.repository.UserInfoRepository;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,18 +18,42 @@ public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final AbtiRepository abtiRepository;
 
-    public void updateUserInfoName(String userEmail, UpdateNameDto updateNameDto) {
+    public UserNameDto getUserInfoName(String userEmail) {
 
         UserInfo userInfo = userRepository.findByEmail(userEmail)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
                 ).getUserInfo();
 
-        if (updateNameDto.getName() == null) {
+        return new UserNameDto(userInfo.getName());
+    }
+
+    public UserAbtiDto getUserInfoAbti(String userEmail) {
+
+        UserInfo userInfo = userRepository.findByEmail(userEmail)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                ).getUserInfo();
+
+        if (userInfo.getAbti() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "유저의 술비티아이가 설정되어있지 않습니다.");
+        }
+
+        return new UserAbtiDto(userInfo.getAbti().getTitle());
+    }
+
+    public void updateUserInfoName(String userEmail, UserNameDto userNameDto) {
+
+        UserInfo userInfo = userRepository.findByEmail(userEmail)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                ).getUserInfo();
+
+        if (userNameDto.getName() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User name required");
         }
 
-        userInfo.setName(updateNameDto.getName());
+        userInfo.setName(userNameDto.getName());
         userInfoRepository.save(userInfo);
     }
 
