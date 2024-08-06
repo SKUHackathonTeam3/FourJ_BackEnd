@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class ScheduleRequestDto {
@@ -20,6 +22,8 @@ public class ScheduleRequestDto {
     private Double highballAlcohol;
     @Schema(description = "고량주 예상 음주량", example = "0.5")
     private Double kaoliangAlcohol;
+    @Schema(description = "약속 시간")
+    private LocalDateTime scheduleTime;
 
     public static ScheduleRequestDto from(Schedule schedule) {
         ScheduleRequestDto scheduleRequestDto = new ScheduleRequestDto();
@@ -30,6 +34,7 @@ public class ScheduleRequestDto {
         scheduleRequestDto.setSojuAlcohol(schedule.getSojuAlcohol());
         scheduleRequestDto.setHighballAlcohol(schedule.getHighballAlcohol());
         scheduleRequestDto.setKaoliangAlcohol(schedule.getKaoliangAlcohol());
+        scheduleRequestDto.setScheduleTime(schedule.getScheduleTime());
         return scheduleRequestDto;
     }
 }

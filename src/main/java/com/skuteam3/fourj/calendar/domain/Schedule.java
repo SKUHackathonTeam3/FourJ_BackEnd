@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -27,5 +29,6 @@ public class Schedule {
     private Double highballAlcohol;
     @Column(columnDefinition = "FLOAT")
     private Double kaoliangAlcohol;
+    private LocalDateTime scheduleTime;
 
 }

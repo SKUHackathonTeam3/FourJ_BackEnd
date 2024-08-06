@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,6 +29,8 @@ public class ScheduleResponseDto {
     private Long calendarId;
     @Schema(description = "약속 날짜", example = "2024-01-01")
     private LocalDate scheduledDate;
+    @Schema(description = "약속 시간")
+    private LocalDateTime scheduleTime;
 
     public static ScheduleResponseDto from(Schedule schedule) {
         ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto();
@@ -41,6 +44,7 @@ public class ScheduleResponseDto {
         scheduleResponseDto.setKaoliangAlcohol(schedule.getKaoliangAlcohol());
         scheduleResponseDto.setCalendarId(schedule.getCalendar().getId());
         scheduleResponseDto.setScheduledDate(LocalDate.of(schedule.getCalendar().getYear(), schedule.getCalendar().getMonth(), schedule.getCalendar().getDay()));
+        scheduleResponseDto.setScheduleTime(schedule.getScheduleTime());
         return scheduleResponseDto;
     }
 

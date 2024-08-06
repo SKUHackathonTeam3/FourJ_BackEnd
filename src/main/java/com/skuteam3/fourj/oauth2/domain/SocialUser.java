@@ -23,10 +23,10 @@ public class SocialUser {
     private Long userId;
 
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "Invalid email format.")
-    @Column(name = "social_user_email", nullable = false, unique = true)
+    @Column(name = "social_user_email", nullable = false)
     private String email;
 
-    @Column(name = "social_user_provider_id", nullable = false)
+    @Column(name = "social_user_provider_id", nullable = false, unique = true)
     private String providerId;
 
     @Enumerated(EnumType.STRING)

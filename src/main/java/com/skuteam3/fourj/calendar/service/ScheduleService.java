@@ -10,6 +10,9 @@ import com.skuteam3.fourj.calendar.dto.ScheduleResponseDto;
 import com.skuteam3.fourj.calendar.dto.WeeklyAlcoholSummaryDto;
 import com.skuteam3.fourj.calendar.repository.CalendarRepository;
 import com.skuteam3.fourj.calendar.repository.ScheduleRepository;
+import com.skuteam3.fourj.contact.domain.Contact;
+import com.skuteam3.fourj.contact.repository.ContactRepository;
+import com.skuteam3.fourj.firebase.service.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +30,12 @@ import java.util.Optional;
 @Service
 public class ScheduleService {
 
+    private final FcmService fcmService;
+
     private final UserRepository userRepository;
     private final CalendarRepository calendarRepository;
     private final ScheduleRepository scheduleRepository;
+    private final ContactRepository contactRepository;
 
     @Transactional
     public Schedule createSchedule(ScheduleRequestDto scheduleRequestDto, int year, int month, int day, String userEmail){
@@ -44,6 +52,20 @@ public class ScheduleService {
             return updateSchedule(calendar.getSchedule().get(0).getId(), scheduleRequestDto);
         }
 
+        Optional<Contact> contactOptional = contactRepository.findContactByUserInfoAndIsMain(userInfo, true);
+        if (contactOptional.isPresent() && userInfo.getClientFcmKey() != null) {
+
+            try {
+                fcmService.schedulePush(
+                        LocalDateTime.of(year, month, day, 0, 0, 0, 0).plusDays(1),
+                        0,
+                        userInfo.getClientFcmKey(),
+                        "비상연락망: " + contactOptional.get().getName(),
+                        contactOptional.get().getNumber());
+            } catch (Exception ignored) {
+            }
+        }
+
         Schedule schedule = new Schedule();
 
         schedule.setCalendar(calendar);
@@ -53,6 +75,7 @@ public class ScheduleService {
         schedule.setSojuAlcohol(scheduleRequestDto.getSojuAlcohol());
         schedule.setHighballAlcohol(scheduleRequestDto.getHighballAlcohol());
         schedule.setKaoliangAlcohol(scheduleRequestDto.getKaoliangAlcohol());
+        schedule.setScheduleTime(scheduleRequestDto.getScheduleTime());
         return scheduleRepository.save(schedule);
     }
 
@@ -75,6 +98,9 @@ public class ScheduleService {
             }
             if(scheduleRequestDto.getKaoliangAlcohol() != null){
                 schedule.setKaoliangAlcohol(scheduleRequestDto.getKaoliangAlcohol());
+            }
+            if(scheduleRequestDto.getScheduleTime() != null){
+                schedule.setScheduleTime(scheduleRequestDto.getScheduleTime());
             }
             schedule.setTodayCondition(scheduleRequestDto.getTodayCondition());
             return scheduleRepository.save(schedule);
@@ -108,7 +134,7 @@ public class ScheduleService {
         for (Calendar calendar: calendarList) {
             scheduleList.add(calendar.getSchedule().get(0));
         }
-        
+
         return scheduleList;
     }
     //해당 날짜 일정 조회
