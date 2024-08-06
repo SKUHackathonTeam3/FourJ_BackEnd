@@ -3,6 +3,7 @@ package com.skuteam3.fourj.calendar.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ public class Schedule {
     private Double highballAlcohol;
     @Column(columnDefinition = "FLOAT")
     private Double kaoliangAlcohol;
+    @CreationTimestamp
     private LocalDateTime scheduleTime;
 
 }
