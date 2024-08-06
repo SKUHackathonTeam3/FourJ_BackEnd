@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface GroupPostRepository extends JpaRepository<GroupPost, Long> {
+public interface    GroupPostRepository extends JpaRepository<GroupPost, Long> {
     List<GroupPost> findGroupPostByHashtagContaining(String hashtag);
 
     List<GroupPost> findByTitleContainingOrContentsContaining(String titleKeyword, String contentKeyword);

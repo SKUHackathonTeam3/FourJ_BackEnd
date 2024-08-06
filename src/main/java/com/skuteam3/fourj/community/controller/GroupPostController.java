@@ -141,7 +141,7 @@ public class GroupPostController {
                     "해당 게시글은 흑역사 키워드 포함, 좋아요 10개 이상의 상위 5개 게시글이 해당됩니다. "+
                     "유저의 ABTI가 설정되어 있지 않은 경우 에러가 발생합니다."
     )
-    @GetMapping("/best/{hashtag}")
+    @GetMapping("/best")
     public ResponseEntity<List<GroupPostResponseDto>> getBestTop5ByLikes() {
         List<GroupPost> groupPosts = groupPostService.getBestTop5ByLikes();
         List<GroupPostResponseDto> groupPostDtos = new ArrayList<>();
