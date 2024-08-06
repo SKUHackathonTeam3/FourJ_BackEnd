@@ -27,7 +27,7 @@ public class TokenController {
             description = "Refresh 토큰으로 Access 토큰을 재발급합니다. " +
                     "HTTP 쿠키에 적재된 Refresh 토큰을 이용하여 Access 토큰을 발급합니다. "
     )
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     public ResponseEntity<?> reissueAccessToken(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
