@@ -80,7 +80,7 @@ public class GroupPostService {
 
     // 해시태그로 게시글 조회
     public List<GroupPost> getGroupPostByHashtag(String hashtag){
-        return groupPostRepository.findGroupPostByHashtag(hashtag);
+        return groupPostRepository.findGroupPostByHashtagContaining(hashtag);
     }
 
     // 키워드로 제목,본문 게시글 조회
@@ -90,8 +90,8 @@ public class GroupPostService {
 
     // 오늘의 흑역사 베스트 게시글 조회
     // #흑역사 해시태그 포함, 좋아요 10개 이상의 상위 5개 게시글
-    public List<GroupPost> getBestTop5ByLikes(String hashtag){
-        return groupPostRepository.findTop5GroupPostsWithLikesGreaterThanNine(hashtag);
+    public List<GroupPost> getBestTop5ByLikes(){
+        return groupPostRepository.findTop5GroupPostsWithLikesGreaterThanNine();
     }
 
     public Integer getLikesByGroupPostId(Long id){

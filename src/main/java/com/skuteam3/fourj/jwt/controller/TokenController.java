@@ -58,11 +58,11 @@ public class TokenController {
         if (accessTokenUser == null || accessTokenUser != refreshTokenUser) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("토큰 생성에 실패하였습니다.");
 
         Map<String, Object> response = new HashMap<>();
+        response.put("accessToken", accessToken);
 
         UserInfo userInfo = accessTokenUser.getUserInfo();
-        response.put("NeedAbti", userInfo.getAbti() == null);
 
-        response.put("accessToken", accessToken);
+        response.put("NeedAbti", userInfo.getAbti() == null);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);

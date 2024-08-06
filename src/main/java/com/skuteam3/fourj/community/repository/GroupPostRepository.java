@@ -9,16 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GroupPostRepository extends JpaRepository<GroupPost, Long> {
-    List<GroupPost> findGroupPostByHashtag(String hashtag);
+    List<GroupPost> findGroupPostByHashtagContaining(String hashtag);
 
     List<GroupPost> findByTitleContainingOrContentsContaining(String titleKeyword, String contentKeyword);
 
     @Query("SELECT gp FROM GroupPost gp " +
             "LEFT JOIN gp.likes l " +
-            "WHERE gp.hashtag LIKE %:hashtag% " +
             "GROUP BY gp.id " +
             "HAVING COUNT(l.id) > 9 " +
             "ORDER BY COUNT(l.id) DESC")
-    List<GroupPost> findTop5GroupPostsWithLikesGreaterThanNine( String hashtag);
+    List<GroupPost> findTop5GroupPostsWithLikesGreaterThanNine();
 
 }

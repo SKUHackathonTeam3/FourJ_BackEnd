@@ -17,7 +17,8 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(title= "주적주적 API", description= "주적주적 백엔드 API Doc", version= "v1"),
         servers = {
                 @Server(url = "http://localhost:8080", description = "주적주적 API LocalTest"),
-                @Server(url = "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080", description = "주적주적 API Production")
+                @Server(url = "http://ec2-43-201-61-252.ap-northeast-2.compute.amazonaws.com:8080", description = "주적주적 API Develop"),
+                @Server(url = "https://api.smartcheers.site", description = "주적주적 API Production")
         }
 )
 @RequiredArgsConstructor
