@@ -5,7 +5,6 @@ import com.skuteam3.fourj.account.domain.UserInfo;
 import com.skuteam3.fourj.account.repository.UserRepository;
 import com.skuteam3.fourj.jwt.provider.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +34,7 @@ public class TokenController {
             description = "Refresh 토큰으로 Access 토큰을 재발급합니다. " +
                     "HTTP 쿠키에 적재된 Refresh 토큰을 이용하여 Access 토큰을 발급합니다. "
     )
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     public ResponseEntity<?> reissueAccessToken(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
@@ -63,11 +62,7 @@ public class TokenController {
 
         UserInfo userInfo = accessTokenUser.getUserInfo();
 
-        if (userInfo.getAbti() == null) {
-            response.put("NeedAbti", true);
-        } else {
-            response.put("NeedAbti", false);
-        }
+        response.put("NeedAbti", userInfo.getAbti() == null);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
