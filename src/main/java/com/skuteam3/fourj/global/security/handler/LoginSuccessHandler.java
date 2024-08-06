@@ -72,9 +72,9 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         }
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
 
-            Map<String, String> responseBody = new HashMap<>();
+            Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("accessToken", accessToken);
-            responseBody.put("message", userInfo.getAbti() == null ? "Need ABTI" : "Login successful");
+            responseBody.put("NeedAbti", userInfo.getAbti() == null);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
