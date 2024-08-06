@@ -52,6 +52,7 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
+                .domain("smartcheers.site")
                 .maxAge(24*60*60)
                 .sameSite("None")
                 .build();
@@ -63,7 +64,7 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         cookie.setMaxAge(24*60*60);
         //response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Set-Cookie", responseCookie.toString() + "; SameSite=None;");
+        response.setHeader("Set-Cookie", responseCookie.toString());
 
         if (authentication instanceof OAuth2AuthenticationToken) {
 
