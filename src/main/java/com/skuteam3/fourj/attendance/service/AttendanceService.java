@@ -66,13 +66,10 @@ public class AttendanceService {
         int continuousAttendanceDays = 1;
         if (userInfo.getLastAttendanceDate() != null) {
 
-            if (userInfo.getLastAttendanceDate().isEqual(LocalDate.now())) {
+            continuousAttendanceDays = userInfo.getContinuousAttendanceDays() + 1;
+            if (continuousAttendanceDays > userInfo.getMaximumAttendanceDays()) {
 
-                continuousAttendanceDays = userInfo.getContinuousAttendanceDays() + 1;
-                if (continuousAttendanceDays > userInfo.getMaximumAttendanceDays()) {
-
-                    userInfo.setMaximumAttendanceDays(continuousAttendanceDays);
-                }
+                userInfo.setMaximumAttendanceDays(continuousAttendanceDays);
             }
         }
 
