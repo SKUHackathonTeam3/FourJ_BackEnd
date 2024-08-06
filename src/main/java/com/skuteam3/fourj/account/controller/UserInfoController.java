@@ -33,7 +33,7 @@ public class UserInfoController {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200", description = "FCM Client Key 조회 성공",
+                    responseCode = "200", description = "유저 닉네임 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -55,14 +55,14 @@ public class UserInfoController {
     }
 
     @Operation(
-            summary = "유저 닉네임 조회",
-            description = "유저의 닉네임을 조회 합니다. " +
+            summary = "유저 술비티아이 조회",
+            description = "유저의 술비티아이을 조회 합니다. " +
                     "헤더의 Authorization필드에 적재된 JWT토큰을 이용하여 회원 정보를 받아오며, " +
-                    "해당 유저의 닉네임을 반환합니다. "
+                    "해당 유저의 술비티아이를 반환합니다. "
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200", description = "FCM Client Key 조회 성공",
+                    responseCode = "200", description = "유저 술비티아이 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
