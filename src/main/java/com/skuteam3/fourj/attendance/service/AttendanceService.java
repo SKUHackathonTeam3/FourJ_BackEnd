@@ -66,8 +66,7 @@ public class AttendanceService {
         int continuousAttendanceDays = 1;
         if (userInfo.getLastAttendanceDate() != null) {
 
-            LocalDate yesterday = LocalDate.now().minusDays(1);
-            if (userInfo.getLastAttendanceDate().isEqual(yesterday)) {
+            if (userInfo.getLastAttendanceDate().isEqual(LocalDate.now())) {
 
                 continuousAttendanceDays = userInfo.getContinuousAttendanceDays() + 1;
                 if (continuousAttendanceDays > userInfo.getMaximumAttendanceDays()) {
