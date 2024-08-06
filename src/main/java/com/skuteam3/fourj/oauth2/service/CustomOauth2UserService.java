@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -77,9 +78,11 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             throw new IllegalStateException("Failed to find or create social user.");
         }
 
-        Optional<SocialUser> existingUser = socialUserRepository.findByEmail(socialUser.getEmail());
-        if (existingUser.isPresent() && existingUser.get().getSocialType().equals(socialUser.getSocialType())) {
-            return new CustomUserDetails(existingUser.get().getUser(), oAuth2User.getAttributes());
+        List<SocialUser> existingUser = socialUserRepository.findByEmail(socialUser.getEmail());
+        for (SocialUser existingSocialUser: existingUser) {
+            if (existingSocialUser.getSocialType().equals(socialUser.getSocialType())) {
+                return new CustomUserDetails(existingSocialUser.getUser(), oAuth2User.getAttributes());
+            }
         }
 
         User user = userRepository.findByEmail(userEmail).orElse(null);
